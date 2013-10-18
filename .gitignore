@@ -5,3 +5,6 @@ config.yaml
 # python related
 __pycache__
 *.pyc
+
+# misc
+*.swp
