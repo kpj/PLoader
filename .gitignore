@@ -1,0 +1,7 @@
+# local stuff
+config.yaml
+*.ploader
+
+# python related
+__pycache__
+*.pyc
