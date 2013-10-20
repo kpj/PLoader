@@ -44,7 +44,7 @@ def load_settings():
 	else:
 		basic_conf = """download-dir: downloads
 captcha-api-key: xyz
-port: 8080"""
+port: 50505"""
 		fd = open(config, "w")
 		fd.write(basic_conf)
 		fd.close()
