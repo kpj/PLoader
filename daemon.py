@@ -25,7 +25,7 @@ def main():
 
 		return answ
 
-	server = Server('localhost', settings["port"])
+	server = Server('0.0.0.0', settings["port"])
 	server.set_callback(handle_net_input)
 
 	server = threading.Thread(target = asyncore.loop)
