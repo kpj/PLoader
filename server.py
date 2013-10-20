@@ -1,4 +1,5 @@
 from commands import web_commands
+from dlc_handler import dlc_to_links
 
 import asyncore, shlex
 
@@ -14,37 +15,50 @@ class Client(asyncore.dispatcher_with_send):
 
 	def handle_read(self):
 		data = self.recv(8192)
-		answ = "I don't know what to do..."
+		answ = "I don't know what to do... (try add/stats)"
 		if data:
 			inp = data.decode(encoding='UTF-8').rstrip("\n")
 
 			if self.reading_links:
+				# link input mode enabled
 				if self.download_obj["name"] == None:
-#					print("Assuming name/password")
+					# setting meta info
 					s = shlex.split(inp)
+					answ = "Invalid statement"
 					if len(s) == 0:
-						answ = "Invalid statement"
 						self.reading_links = False
 					else:
-						self.download_obj["name"] = s[0]
-						if len(s) == 2:
-							self.download_obj["passwd"] = s[1]
+						self.download_obj["type"] = s[0]
+						if len(s) > 1:
+							self.download_obj["name"] = s[1]
+							if len(s) == 3:
+								self.download_obj["passwd"] = s[2]
+							else:
+								self.download_obj["passwd"] = ""
+							answ = 'Enter one link per line. Terminate with empty line'
+
+							self.download_obj["links"] = []
 						else:
-							self.download_obj["passwd"] = ""
-						answ = 'Enter one link per line. Terminate with empty line'
+							self.reading_links = False
 				else:
+					# actually adding links
 					if len(inp) == 0:
-#						print("Adding input")
+						# terminate link-addition
 						self.reading_links = False
 						answ = self.callback({"download": self.download_obj})
 						self.download_obj = {"name": None}
 					else:
-#						print("Assuming link")
-						self.download_obj.setdefault("links", []).append(inp)
+						# add given link
 						answ = "Thanks"
+						if self.download_obj["type"] == "links":
+							self.download_obj.setdefault("links", []).append(inp)
+						elif self.download_obj["type"] == "dlc":
+							self.download_obj.setdefault("links", []).extend(dlc_to_links(inp))
+						else:
+							answ = "Invalid link type given"
 			else:
 				if inp == web_commands["add_links"]:
-					answ = 'Enter: "<name> [passwd]"'
+					answ = 'Enter: "<type:links/dlc> <name> [passwd]"'
 					self.reading_links = True
 				elif inp == web_commands["status_request"]:
 					s = shlex.split(inp)

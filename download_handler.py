@@ -62,10 +62,10 @@ class Download(object):
 				poll = proc.poll()
 				while poll == None:
 					poll = proc.poll()
-					print("> \"%s\" => \"%s\" - Loading" % (link, fname))
+					print("> \"%s\" => \"%s\" - Loading" % (link, os.path.join(self.dw_dir, fname)))
 					print("\033[1A", end="") # moves cursor one row up
 					time.sleep(1)
-				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, fname, poll))
+				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, os.path.join(self.dw_dir, fname), poll))
 				self.loading = False
 
 				if poll != 0:

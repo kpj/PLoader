@@ -34,7 +34,7 @@ def write_to_file(path, content):
 def get_filename(link):
 	(stdout, stderr) = exe(["plowprobe", link]).communicate()
 	if len(stdout) > 2:
-		return stdout.split("\n")[0][2:]
+		return stdout.decode("utf8").split("\n")[0][2:]
 	return "unknown"
 
 def load_settings():
