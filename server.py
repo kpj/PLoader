@@ -53,7 +53,9 @@ class Client(asyncore.dispatcher_with_send):
 						if self.download_obj["type"] == "links":
 							self.download_obj.setdefault("links", []).append(inp)
 						elif self.download_obj["type"] == "dlc":
-							self.download_obj.setdefault("links", []).extend(dlc_to_links(inp))
+							dlc_links = dlc_to_links(inp)
+							if dlc_links != None:
+								self.download_obj.setdefault("links", []).extend(dlc_links)
 						else:
 							answ = "Invalid link type given"
 			else:

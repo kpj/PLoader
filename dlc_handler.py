@@ -18,4 +18,10 @@ def dlc_to_links(url):
 	f2 = urllib.request.urlopen(request2)
 
 	soup = BeautifulSoup(f2.read().decode('utf-8'))
-	return soup.find("textarea", {"class": "caja_des"}).getText().split("\n")
+
+	textarea = soup.find("textarea", {"class": "caja_des"})
+
+	if textarea != None:
+		return textarea.getText().split("\n")
+	else:
+		return None
