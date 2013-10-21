@@ -49,6 +49,9 @@ class Download(object):
 	def download(self):
 		def load():
 			for ele in self.links:
+				if ele["status"] == "success":
+					continue
+
 				link = ele["link"]
 				if ele["filename"] == None:
 					ele["filename"] = utils.get_filename(link)

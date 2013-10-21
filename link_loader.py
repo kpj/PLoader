@@ -21,7 +21,7 @@ class LinkLoader(object):
 			local = json.load(open(self.path, "r"))
 			for d in local:
 				dw = Download(d["name"], d["links"], d["passwd"])
-				dw.set_save_function = self.save_data
+				dw.set_save_function(self.save_data)
 				data.append(dw)
 		return data
 
@@ -60,10 +60,10 @@ class LinkLoader(object):
 		i = 0
 		for dw in self.data:
 			if index > i:
-				if dw.get_status() == "not started":
+				if dw.get_status() != "success":
 					i += 1
 			else:
-				if dw.get_status() == "not started":
+				if dw.get_status() != "success":
 					return dw
 				i += 1
 		return None
