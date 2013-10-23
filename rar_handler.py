@@ -23,3 +23,7 @@ class RAR(object):
 	def list_content(self):
 		for f in self.file.infolist():
 			print(f.filename, f.file_size, f.volume, f.flags)
+
+
+def is_rar(fn):
+	rarfile.is_rarfile(fn)
