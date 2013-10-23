@@ -4,6 +4,10 @@ import subprocess, os, yaml
 def exe(cmd):
 	if type(cmd) != type([]):
 		cmd = shlex.split(cmd)
+	return subprocess.Popen(cmd)
+def exe2(cmd):
+	if type(cmd) != type([]):
+		cmd = shlex.split(cmd)
 	return subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
 def set_dir(directory, create=True):
@@ -32,7 +36,7 @@ def write_to_file(path, content):
 	fd.close()
 
 def get_filename(link):
-	(stdout, stderr) = exe(["plowprobe", link]).communicate()
+	(stdout, stderr) = exe2(["plowprobe", link]).communicate()
 	if len(stdout) > 2:
 		return stdout.decode("utf8").split("\n")[0][2:]
 	return "unknown"

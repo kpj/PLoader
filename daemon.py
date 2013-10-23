@@ -36,6 +36,7 @@ def main():
 		next_dw = link_handler.get_unstarted_download(0)
 		if next_dw != None:
 			next_dw.download()
+			next_dw.unpack()
 		else:
 			time.sleep(10)
 

@@ -3,12 +3,15 @@ import subprocess
 import os, os.path
 import utils
 import time
+import re
+
+import rar_handler
 
 
 settings = utils.load_settings();
 
 class Download(object):
-	def __init__(self, name, link_list, passwd = ""):
+	def __init__(self, name, link_list, passwd = None):
 		self.name = name
 		self.links = link_list
 		self.passwd = passwd
@@ -46,6 +49,18 @@ class Download(object):
 
 		return "loading"
 
+	def unpack(self):
+		if self.get_status() == "success":
+			for ele in self.links:
+				fn = ele["filename"]
+				if rar_handler.is_rar(fn):
+					rar = rar_handler.RAR(fn, self.passwd)
+					if rar.first_volume:
+						print("Extracting \"%s\"" % fn)
+#						rar.extract()
+				else:
+					print("No compression method found for \"%s\"" % fn)
+
 	def download(self):
 		def load():
 			for ele in self.links:
@@ -65,15 +80,15 @@ class Download(object):
 				poll = proc.poll()
 				while poll == None:
 					poll = proc.poll()
-					print("> \"%s\" => \"%s\" - Loading" % (link, os.path.join(self.dw_dir, fname)))
-					print("\033[1A", end="") # moves cursor one row up
+#					print("> \"%s\" => \"%s\" - Loading" % (link, os.path.join(self.dw_dir, fname)))
+#					print("\033[1A", end="") # moves cursor one row up
 					time.sleep(1)
-				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, os.path.join(self.dw_dir, fname), poll))
+#				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, os.path.join(self.dw_dir, fname), poll))
 				self.loading = False
 
 				if poll != 0:
-					utils.write_to_file(os.path.join(self.log_dir, "stdout.log"), proc.stdout.read().decode("utf8"))
-					utils.write_to_file(os.path.join(self.log_dir, "stderr.log"), proc.stderr.read().decode("utf8"))
+#					utils.write_to_file(os.path.join(self.log_dir, "stdout.log"), proc.stdout.read().decode("utf8"))
+#					utils.write_to_file(os.path.join(self.log_dir, "stderr.log"), proc.stderr.read().decode("utf8"))
 					ele["status"] = "error"
 				else:
 					ele["status"] = "success"
