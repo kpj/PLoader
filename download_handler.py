@@ -54,7 +54,7 @@ class Download(object):
 			for ele in self.links:
 				fn = ele["filename"]
 				if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
-					rar = rar_handler.RAR(fn, self.passwd)
+					rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
 					if rar.first_volume:
 						print("Extracting \"%s\"" % fn)
 						rar.extract()

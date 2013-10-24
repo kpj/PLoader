@@ -26,4 +26,4 @@ class RAR(object):
 
 
 def is_rar(fn):
-	rarfile.is_rarfile(fn)
+	return rarfile.is_rarfile(fn)
