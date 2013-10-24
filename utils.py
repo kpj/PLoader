@@ -1,14 +1,20 @@
-import subprocess, os, yaml
+import subprocess, os, yaml, shlex
 
 
 def exe(cmd):
 	if type(cmd) != type([]):
 		cmd = shlex.split(cmd)
 	return subprocess.Popen(cmd)
-def exe2(cmd):
+def exe_pipes(cmd):
 	if type(cmd) != type([]):
 		cmd = shlex.split(cmd)
 	return subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+def exe_flos(cmd, fout, ferr):
+	if type(cmd) != type([]):
+		cmd = shlex.split(cmd)
+	out = open(fout, "w") #io.StringIO()
+	err = open(ferr, "w") #io.StringIO()
+	return subprocess.Popen(cmd, stdout = out, stderr = err), out, err
 
 def set_dir(directory, create=True):
 	if os.path.isdir(directory):
@@ -36,7 +42,7 @@ def write_to_file(path, content):
 	fd.close()
 
 def get_filename(link):
-	(stdout, stderr) = exe2(["plowprobe", link]).communicate()
+	(stdout, stderr) = exe_pipes(["plowprobe", link]).communicate()
 	if len(stdout) > 2:
 		return stdout.decode("utf8").split("\n")[0][2:]
 	return "unknown"

@@ -63,6 +63,7 @@ class Download(object):
 
 	def download(self):
 		def load():
+			error_item = None
 			for ele in self.links:
 				if ele["status"] == "success":
 					continue
@@ -75,24 +76,34 @@ class Download(object):
 				ele["status"] = "loading"
 
 				self.loading = True
-				proc = utils.exe(["plowdown", "-o", self.dw_dir, "--9kweu", settings["captcha-api-key"], link])
+				proc, stdout, stderr = utils.exe_flos(
+						["plowdown", "-o", self.dw_dir, "--9kweu", settings["captcha-api-key"], link],
+						os.path.join(self.log_dir, "stdout.log"),
+						os.path.join(self.log_dir, "stderr.log")
+				)
 
 				poll = proc.poll()
 				while poll == None:
 					poll = proc.poll()
-#					print("> \"%s\" => \"%s\" - Loading" % (link, os.path.join(self.dw_dir, fname)))
-#					print("\033[1A", end="") # moves cursor one row up
+					print("> \"%s\" => \"%s\" - Loading" % (link, os.path.join(self.dw_dir, fname)))
+					print("\033[1A", end="") # moves cursor one row up
 					time.sleep(1)
-#				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, os.path.join(self.dw_dir, fname), poll))
+				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, os.path.join(self.dw_dir, fname), poll))
 				self.loading = False
 
 				if poll != 0:
-#					utils.write_to_file(os.path.join(self.log_dir, "stdout.log"), proc.stdout.read().decode("utf8"))
-#					utils.write_to_file(os.path.join(self.log_dir, "stderr.log"), proc.stderr.read().decode("utf8"))
 					ele["status"] = "error"
+					error_item = ele
 				else:
 					ele["status"] = "success"
 
+				# move error to end of list
+				if error_item != None:
+					self.links.remove(error_item)
+					self.links.append(error_item)
+					error_item = None
+
+				# save current changes
 				self.saver()
 
 #		self.thread = threading.Thread(target = load)

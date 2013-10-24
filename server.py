@@ -2,20 +2,27 @@ from commands import web_commands
 from dlc_handler import dlc_to_links
 
 import asyncore, socket, shlex
+import select
 
 
 class Client(asyncore.dispatcher_with_send):
 	def __init__(self, sock):
 		super().__init__(sock)
+		self.sock = sock
+
+		self.poll = select.poll()
+		self.stream = None
 
 		self.callback = None
 
 		self.reading_links = False
 		self.download_obj = {"name": None}
 
+		self.watching_process = False
+
 	def handle_read(self):
 		data = self.recv(8192)
-		answ = "I don't know what to do... (try add/stats)"
+		answ = "I don't know what to do... (try add/stats/watch)"
 		if data:
 			inp = data.decode(encoding='UTF-8').rstrip("\n")
 
@@ -58,6 +65,13 @@ class Client(asyncore.dispatcher_with_send):
 								self.download_obj.setdefault("links", []).extend(dlc_links)
 						else:
 							answ = "Invalid link type given"
+			elif self.watching_process:
+				answ = "Under construction"
+				print("Polling")
+				for fn, event in self.poll.poll():
+					print(fn, event)
+				print("Done")
+				self.watching_process = False
 			else:
 				if inp == web_commands["add_links"]:
 					answ = 'Enter: "<type:links/dlc> <name> [passwd]"'
@@ -65,11 +79,22 @@ class Client(asyncore.dispatcher_with_send):
 				elif inp == web_commands["status_request"]:
 					s = shlex.split(inp)
 					answ = self.callback({"status": s[1:]})
+				elif inp == web_commands["transmit_stdout_stderr"]:
+					if self.stream != None:
+						self.watching_process = True
+						answ = "Commencing stream"
+						self.poll.register(self.stream)
+						self.poll.register(self.sock)
+					else:
+						answ = "No stream set"
 
 		self.send(("%s\n" % answ).encode(encoding='UTF-8'))
 
 	def set_callback(self, callback):
 		self.callback = callback
+
+	def set_stream(self, stream):
+		self.stream = stream
 
 class Server(asyncore.dispatcher):
 	def __init__(self, host, port):
