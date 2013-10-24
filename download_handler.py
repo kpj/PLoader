@@ -53,7 +53,7 @@ class Download(object):
 		if self.get_status() == "success":
 			for ele in self.links:
 				fn = ele["filename"]
-				if rar_handler.is_rar(fn):
+				if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
 					rar = rar_handler.RAR(fn, self.passwd)
 					if rar.first_volume:
 						print("Extracting \"%s\"" % fn)
