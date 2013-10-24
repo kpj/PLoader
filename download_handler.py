@@ -56,8 +56,9 @@ class Download(object):
 				if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
 					rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
 					if rar.first_volume:
-						print("Extracting \"%s\"" % fn)
+						print("Extracting \"%s\"..." % fn, end="")
 						rar.extract()
+						print(" Done" % fn)
 				else:
 					print("No compression method found for \"%s\"" % fn)
 
