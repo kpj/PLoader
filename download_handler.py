@@ -58,7 +58,7 @@ class Download(object):
 					if rar.first_volume:
 						print("Extracting \"%s\"..." % fn, end="")
 						rar.extract()
-						print(" Done" % fn)
+						print(" Done")
 				else:
 					print("No compression method found for \"%s\"" % fn)
 
