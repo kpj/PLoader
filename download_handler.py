@@ -74,11 +74,12 @@ class Download(object):
 					ele["filename"] = utils.get_filename(link)
 				fname = ele["filename"]
 
+				cur_files = set(os.listdir(self.dw_dir))
 				ele["status"] = "loading"
 
 				self.loading = True
 				proc, stdout, stderr = utils.exe_flos(
-						["plowdown", "-o", self.dw_dir, "--9kweu", settings["captcha-api-key"], link],
+						["plowdown", "-o", self.dw_dir, "--9kweu", settings["captcha-api-key"], "--fallback", link],
 						os.path.join(self.log_dir, "stdout.log"),
 						os.path.join(self.log_dir, "stderr.log")
 				)
@@ -99,10 +100,15 @@ class Download(object):
 					ele["status"] = "success"
 
 				# move error to end of list
-				if error_item != None:
+				if error_item:
 					self.links.remove(error_item)
 					self.links.append(error_item)
 					error_item = None
+
+				# try to estimate file name if not given
+				if fname == "unknown":
+					new_file = list(set(os.listdir(self.dw_dir)) - cur_files)[0]
+					ele["filename"] = new_file
 
 				# save current changes
 				self.saver()
