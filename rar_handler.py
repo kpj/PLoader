@@ -9,19 +9,22 @@ rarfile.PATH_SEP = '/'
 
 class RAR(object):
 	def __init__(self, path, passwd=None):
-		self.path = path
+		self._path = path
 		try:
-			self.file = rarfile.RarFile(self.path)
-			self.passwd = passwd
-			self.first_volume = True
+			self._file = rarfile.RarFile(self._path)
+			self._passwd = passwd
+			self._first_volume = True
 		except rarfile.NeedFirstVolume:
-			self.first_volume = False
+			self._first_volume = False
+
+	def is_first_vol(self):
+		return self._first_volume
 
 	def extract(self):
-		self.file.extractall(path=os.path.dirname(self.path), pwd=self.passwd)
+		self._file.extractall(path=os.path.dirname(self._path), pwd=self._passwd)
 
 	def list_content(self):
-		for f in self.file.infolist():
+		for f in self._file.infolist():
 			print(f.filename, f.file_size, f.volume, f.flags)
 
 
