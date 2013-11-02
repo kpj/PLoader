@@ -110,8 +110,9 @@ class Download(object):
 
 				# try to estimate file name if not given
 				if fname == "unknown":
-					new_file = list(set(os.listdir(self.dw_dir)) - cur_files)[0]
-					ele["filename"] = new_file
+					new_file = list(set(os.listdir(self.dw_dir)) - cur_files)
+					if len(new_file) == 1:
+						ele["filename"] = new_file[0]
 
 				# save current changes
 				self.saver()
