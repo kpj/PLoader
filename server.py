@@ -58,12 +58,14 @@ class Client(asyncore.dispatcher_with_send):
 						self.download_obj = {"name": None}
 					else:
 						# add given link
-						answ = "Thanks"
+						parsed_input = utils.clean_links(inp)
+						answ = "%i link%s parsed" % (len(parsed_input), "" if (len(parsed_input) == 1) else "s")
+
 						if self.download_obj["type"] == "links":
-							for link in utils.clean_links(inp):
+							for link in parsed_input:
 								self.download_obj.setdefault("links", []).append(link)
 						elif self.download_obj["type"] == "dlc":
-							for link in utils.clean_links(inp):
+							for link in parsed_input:
 								dlc_links = dlc_to_links(link)
 								if dlc_links != None:
 									self.download_obj.setdefault("links", []).extend(dlc_links)
