@@ -1,4 +1,4 @@
-import subprocess, os, yaml, shlex, re
+import subprocess, os, os.path, yaml, shlex, re, urllib.parse
 
 
 def exe(cmd):
@@ -62,3 +62,7 @@ port: 50505"""
 
 def clean_links(raw_data):
 	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)
+
+def url_to_filename(url):
+	res = urllib.parse.urlparse(url)
+	return os.path.basename(res.path)

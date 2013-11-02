@@ -53,17 +53,20 @@ class Download(object):
 		if self.get_status() == "success":
 			for ele in self.links:
 				fn = ele["filename"]
-				if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
-					rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
-					if rar.is_first_vol:
-						print("Extracting \"%s\"..." % fn, end="")
-						try:
-							rar.extract()
-							print(" Done")
-						except rarfile.RarNoFilesError:
-							print(" Fail")
+				if fn != "unknown":
+					if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
+						rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
+						if rar.is_first_vol:
+							print("Extracting \"%s\"..." % fn, end="")
+							try:
+								rar.extract()
+								print(" Done")
+							except rarfile.RarNoFilesError:
+								print(" Fail")
+					else:
+						print("No compression method found for \"%s\"" % fn)
 				else:
-					print("No compression method found for \"%s\"" % fn)
+					print("Could not estimate filename")
 
 	def download(self):
 		def load():
@@ -112,7 +115,11 @@ class Download(object):
 				if fname == "unknown":
 					new_file = list(set(os.listdir(self.dw_dir)) - cur_files)
 					if len(new_file) == 1:
+						# newly created file
 						ele["filename"] = new_file[0]
+					else:
+						# guess filename from url
+						ele["filename"] = url_to_filename(link)
 
 				# save current changes
 				self.saver()
