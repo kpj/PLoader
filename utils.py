@@ -1,4 +1,4 @@
-import subprocess, os, yaml, shlex
+import subprocess, os, yaml, shlex, re
 
 
 def exe(cmd):
@@ -59,3 +59,6 @@ port: 50505"""
 		fd.write(basic_conf)
 		fd.close()
 		raise Exception("No config file present, created one for you :-)")
+
+def clean_links(raw_data):
+	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)

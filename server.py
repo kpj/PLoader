@@ -4,6 +4,8 @@ from dlc_handler import dlc_to_links
 import asyncore, socket, shlex
 import select
 
+import utils
+
 
 class Client(asyncore.dispatcher_with_send):
 	def __init__(self, sock):
@@ -58,11 +60,13 @@ class Client(asyncore.dispatcher_with_send):
 						# add given link
 						answ = "Thanks"
 						if self.download_obj["type"] == "links":
-							self.download_obj.setdefault("links", []).append(inp)
+							for link in utils.clean_links(inp):
+								self.download_obj.setdefault("links", []).append(link)
 						elif self.download_obj["type"] == "dlc":
-							dlc_links = dlc_to_links(inp)
-							if dlc_links != None:
-								self.download_obj.setdefault("links", []).extend(dlc_links)
+							for link in utils.clean_links(inp):
+								dlc_links = dlc_to_links(link)
+								if dlc_links != None:
+									self.download_obj.setdefault("links", []).extend(dlc_links)
 						else:
 							answ = "Invalid link type given"
 			elif self.watching_process:
