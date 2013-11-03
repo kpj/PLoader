@@ -56,7 +56,7 @@ class Download(object):
 				if fn != "unknown":
 					if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
 						rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
-						if rar.is_first_vol:
+						if rar.is_first_vol():
 							print("Extracting \"%s\"..." % fn, end="")
 							try:
 								rar.extract()
