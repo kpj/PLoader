@@ -62,7 +62,9 @@ class Download(object):
 								rar.extract()
 								print(" Done")
 							except rarfile.RarNoFilesError:
-								print(" Fail")
+								print(" Fail: No files found")
+							except rarfile.RarCRCError:
+								print(" Fail: CRC error")
 					else:
 						print("No compression method found for \"%s\"" % fn)
 				else:
