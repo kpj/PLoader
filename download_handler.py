@@ -56,15 +56,18 @@ class Download(object):
 				if fn != "unknown":
 					if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
 						rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
-						if rar.is_first_vol():
-							print("Extracting \"%s\"..." % fn, end="")
-							try:
-								rar.extract()
-								print(" Done")
-							except rarfile.RarNoFilesError:
-								print(" Fail: No files found")
-							except rarfile.RarCRCError:
-								print(" Fail: CRC error")
+						if rar.all_files_present():
+							if rar.is_first_vol():
+								print("Extracting \"%s\"..." % fn, end="")
+								try:
+									rar.extract()
+									print(" Done")
+								except rarfile.RarNoFilesError:
+									print(" Fail: No files found")
+								except rarfile.RarCRCError:
+									print(" Fail: CRC error")
+						else:
+							print("Could not find all compressed files for \"%s\"" % fn)
 					else:
 						print("No compression method found for \"%s\"" % fn)
 				else:
@@ -75,33 +78,44 @@ class Download(object):
 			error_item = None
 			for ele in self.links:
 				if ele["status"] == "success":
+					# skip if already successfully downloaded
 					continue
 
+				# get item info
 				link = ele["link"]
-				if ele["filename"] == None:
-					ele["filename"] = utils.get_filename(link)
 				fname = ele["filename"]
 
-				cur_files = set(os.listdir(self.dw_dir))
+				# set identifiers
 				ele["status"] = "loading"
-
 				self.loading = True
-				proc, stdout, stderr = utils.exe_flos(
-						["plowdown", "-o", self.dw_dir, "--9kweu", settings["captcha-api-key"], "--fallback", link],
-						os.path.join(self.log_dir, "stdout.log"),
-						os.path.join(self.log_dir, "stderr.log")
-				)
+				error = False
 
-				poll = proc.poll()
-				while poll == None:
-					poll = proc.poll()
-					print("> \"%s\" => \"%s\" - Loading" % (link, os.path.join(self.dw_dir, fname)))
-					print("\033[1A", end="") # moves cursor one row up
-					time.sleep(1)
-				print("> \"%s\" => \"%s\" - Done ($? = %i)" % (link, os.path.join(self.dw_dir, fname), poll))
+				# get download link and filename
+				download_link_getter = utils.exe_pipes('plowdown -v1 --skip-final --printf "# %%f%%n%%d" %s' % link)
+				stdout, stderr = download_link_getter.communicate()
+
+				# try to actually download file
+				res = str(stdout).split("\\n")
+				if len(res) != 3:
+					print("Error while getting link info")
+					error = True
+				else:
+					if not ele["filename"]:
+						ele["filename"] = res[0][4:]
+					fname = ele["filename"]
+					download_link = res[1]
+				
+					final_path = os.path.join(self.dw_dir, fname)
+					print("Saving '%s' to '%s'" % (download_link, final_path))
+					try:
+						utils.dw_file_to(download_link, final_path)
+					except Exception as e:
+						print("Error while downloading: " + str(e))
+						error = True
+
+				# handle errors if needed
 				self.loading = False
-
-				if poll != 0:
+				if error:
 					ele["status"] = "error"
 					error_item = ele
 				else:
@@ -112,16 +126,6 @@ class Download(object):
 					self.links.remove(error_item)
 					self.links.append(error_item)
 					error_item = None
-
-				# try to estimate file name if not given
-				if fname == "unknown":
-					new_file = list(set(os.listdir(self.dw_dir)) - cur_files)
-					if len(new_file) == 1:
-						# newly created file
-						ele["filename"] = new_file[0]
-					else:
-						# guess filename from url
-						ele["filename"] = url_to_filename(link)
 
 				# save current changes
 				self.saver()

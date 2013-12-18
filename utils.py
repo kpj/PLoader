@@ -1,4 +1,4 @@
-import subprocess, os, os.path, yaml, shlex, re, urllib.parse
+import subprocess, os, os.path, yaml, shlex, re, urllib.parse, shutil, urllib.request
 
 
 def exe(cmd):
@@ -15,6 +15,12 @@ def exe_flos(cmd, fout, ferr):
 	out = open(fout, "w") #io.StringIO()
 	err = open(ferr, "w") #io.StringIO()
 	return subprocess.Popen(cmd, stdout = out, stderr = err), out, err
+
+def dw_file_to(url, path):
+	"""Saves file from url to path
+	"""
+	with urllib.request.urlopen(url) as response, open(path, 'wb') as out_file:
+		shutil.copyfileobj(response, out_file)
 
 def set_dir(directory, create=True):
 	if os.path.isdir(directory):
