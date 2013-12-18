@@ -97,7 +97,7 @@ class Download(object):
 				# try to actually download file
 				res = stdout.decode("utf8").split("\n")
 				if len(res) != 3:
-					print("Error while getting link info: \"" + stderr.decode("utf8") + "\"")
+					print("Error while getting link info: " + repr(stderr.decode("utf8")))
 					error = True
 				else:
 					if not ele["filename"]:
