@@ -95,13 +95,13 @@ class Download(object):
 				stdout, stderr = download_link_getter.communicate()
 
 				# try to actually download file
-				res = str(stdout).split("\\n")
+				res = stdout.decode("utf8").split("\n")
 				if len(res) != 3:
-					print("Error while getting link info")
+					print("Error while getting link info: \"" + stderr.decode("utf8") + "\"")
 					error = True
 				else:
 					if not ele["filename"]:
-						ele["filename"] = res[0][4:]
+						ele["filename"] = res[0][2:]
 					fname = ele["filename"]
 					download_link = res[1]
 				
