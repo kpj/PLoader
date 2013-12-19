@@ -91,7 +91,7 @@ class Download(object):
 				error = False
 
 				# get download link and filename
-				download_link_getter = utils.exe_pipes('plowdown -v1 --skip-final --printf "# %%f%%n%%d" %s' % link)
+				download_link_getter = utils.exe_pipes('plowdown -v1 --skip-final --printf "%%f%%n%%d" %s' % link)
 				stdout, stderr = download_link_getter.communicate()
 
 				# try to actually download file
@@ -101,7 +101,7 @@ class Download(object):
 					error = True
 				else:
 					if not ele["filename"]:
-						ele["filename"] = res[0][2:]
+						ele["filename"] = res[0]
 					fname = ele["filename"]
 					download_link = res[1]
 				
