@@ -21,11 +21,13 @@ class Download(object):
 
 		self.saver = None
 
+		self.cur_item = None
+
 	def __str__(self):
 		out = "\n"
 		out += "%s (%i) - %s\n" % (self.name, len(self.links), self.passwd)
 		for ele in self.links:
-			out += "[%s] %s\n" % (ele["status"], ele["link"])
+			out += "[%s] %s (%s)\n" % (ele["status"], ele["link"], ele["progress"] if "progress" in ele.keys() else "-")
 		out += "-> %s\n" % self.dw_dir
 		return out
 
@@ -81,6 +83,10 @@ class Download(object):
 					# skip if already successfully downloaded
 					continue
 
+				# init progress bar
+				ele["progress"] = "-"
+				self.cur_item = ele
+
 				# get item info
 				link = ele["link"]
 				fname = ele["filename"]
@@ -108,7 +114,7 @@ class Download(object):
 					final_path = os.path.join(self.dw_dir, fname)
 					print("Saving '%s' to '%s'" % (download_link, final_path))
 					try:
-						utils.dw_file_to(download_link, final_path)
+						utils.dw_file_to(download_link, final_path, self.handle_download_progress)
 					except Exception as e:
 						print("Error while downloading: " + str(e))
 						error = True
@@ -133,3 +139,6 @@ class Download(object):
 #		self.thread = threading.Thread(target = load)
 #		self.thread.start()
 		load()
+
+	def handle_download_progress(self, loaded_block_num, block_size, total_size):
+		self.cur_item["progress"] = str(utils.sizeof_fmt(loaded_block_num * block_size)) + "/" + str(utils.sizeof_fmt(total_size))

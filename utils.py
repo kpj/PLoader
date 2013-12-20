@@ -16,11 +16,12 @@ def exe_flos(cmd, fout, ferr):
 	err = open(ferr, "w") #io.StringIO()
 	return subprocess.Popen(cmd, stdout = out, stderr = err), out, err
 
-def dw_file_to(url, path):
+def dw_file_to(url, path, callback):
 	"""Saves file from url to path
 	"""
-	with urllib.request.urlopen(url) as response, open(path, 'wb') as out_file:
-		shutil.copyfileobj(response, out_file)
+	#with urllib.request.urlopen(url) as response, open(path, 'wb') as out_file:
+	#	shutil.copyfileobj(response, out_file)
+	urllib.request.urlretrieve(url, path, callback)
 
 def set_dir(directory, create=True):
 	if os.path.isdir(directory):
@@ -72,3 +73,10 @@ def clean_links(raw_data):
 def url_to_filename(url):
 	res = urllib.parse.urlparse(url)
 	return os.path.basename(res.path)
+
+def sizeof_fmt(num):
+    for x in ['bytes','KB','MB','GB']:
+        if num < 1024.0:
+            return "%3.1f%s" % (num, x)
+        num /= 1024.0
+    return "%3.1f%s" % (num, 'TB')
