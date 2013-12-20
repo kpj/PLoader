@@ -17,6 +17,7 @@ class RAR(object):
 			self._have_all_files = True
 		except rarfile.NeedFirstVolume:
 			self._first_volume = False
+			self._have_all_files = True
 		except FileNotFoundError:
 			self._have_all_files = False
 
