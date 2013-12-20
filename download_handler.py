@@ -4,6 +4,7 @@ import os, os.path
 import utils
 import time
 import re
+import sys
 
 import rar_handler, rarfile
 
@@ -60,7 +61,8 @@ class Download(object):
 						rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
 						if rar.all_files_present():
 							if rar.is_first_vol():
-								print("Extracting \"%s\"..." % fn, end="")
+								sys.stdout.write("Extracting \"%s\"..." % fn)
+								sys.stdout.flush()
 								try:
 									rar.extract()
 									print(" Done")
