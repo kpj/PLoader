@@ -29,6 +29,7 @@ def main():
 	server.set_callback(handle_net_input)
 
 	server = threading.Thread(target = asyncore.loop)
+	server.daemon = True
 	server.start()
 	print("Server running")
 
