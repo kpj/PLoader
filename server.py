@@ -34,7 +34,7 @@ class Client(asyncore.dispatcher_with_send):
 					# setting meta info
 					s = shlex.split(inp)
 					answ = "Invalid statement"
-					if len(s) == 0:
+					if len(s) == 0 or len(s) > 3 or (s[0] != "links" and s[0] != "dlc"):
 						self.reading_links = False
 					else:
 						self.download_obj["type"] = s[0]
