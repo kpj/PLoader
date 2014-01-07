@@ -1,8 +1,8 @@
 import pickle, inspect, json
 import os.path
 
-from download_handler import Download
-import utils
+from ploader.download_handler import Download
+import ploader.utils as utils
 
 
 class LinkLoader(object):

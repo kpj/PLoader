@@ -1,10 +1,10 @@
-from commands import web_commands
-from dlc_handler import dlc_to_links
+from ploader.commands import web_commands
+from ploader.dlc_handler import dlc_to_links
 
 import asyncore, socket, shlex
 import select
 
-import utils
+import ploader.utils as utils
 
 
 class Client(asyncore.dispatcher_with_send):

@@ -1,12 +1,12 @@
 import threading
 import subprocess
 import os, os.path
-import utils
 import time
 import re
 import sys
 
-import rar_handler, rarfile
+import ploader.utils as utils
+import ploader.rar_handler, rarfile
 
 
 settings = utils.load_settings();

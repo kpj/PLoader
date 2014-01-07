@@ -1,10 +1,16 @@
+# python stuff
+*.pyc
+__pycache__
+
+# setuptools stuff
+/dist/
+/*.egg*
+/build/
+
 # local stuff
 config.yaml
 *.ploader
-
-# python related
-__pycache__
-*.pyc
+/OLD/
 
 # misc
 *.swp
