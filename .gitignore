@@ -7,6 +7,11 @@ __pycache__
 /*.egg*
 /build/
 
+# aur stuff
+/aur/pkg/
+/aur/python-ploader-git-0.4.0-1-any.pkg.tar.xz
+/aur/src/
+
 # local stuff
 config.yaml
 *.ploader

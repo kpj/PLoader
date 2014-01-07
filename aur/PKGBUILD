@@ -1,0 +1,40 @@
+# Maintainer: kpj <kpjkpjkpjkpjkpjkpj@gmail.com>
+
+_pkgname="ploader"
+
+pkgname="python-$_pkgname-git"
+pkgver=0.4.0
+pkgrel=1
+pkgdesc="A pure cli-based download manager"
+arch=('any')
+url="https://github.com/kpj/PLoader"
+license=('MIT')
+depends=('python')
+makedepends=('python-setuptools')
+checkdepends=('python-nose')
+
+_gitroot="git@github.com:kpj/PLoader.git"
+_gitname="PLoader"
+
+build() {
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+  
+  if [[ -d "$_gitname" ]]; then
+    cd "$_gitname" && git pull origin
+    msg "The local files are updated."
+  else
+    git clone "$_gitroot" "$_gitname"
+  fi
+
+  msg "GIT checkout done or server timeout"
+}
+
+package() {
+  cd "${srcdir}/$_gitname"
+
+  python setup.py install --root="${pkgdir}"
+
+  install -m755 -d "${pkgdir}/usr/share/licenses/python-ploader-git"
+  install -m644 LICENSE "${pkgdir}/usr/share/licenses/python-ploader-git/"
+}
