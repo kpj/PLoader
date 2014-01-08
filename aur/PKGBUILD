@@ -1,4 +1,5 @@
 # Maintainer: kpj <kpjkpjkpjkpjkpjkpj@gmail.com>
+PACKAGER="kpj <kpjkpjkpjkpjkpjkpj@gmail.com>"
 
 _pkgname="ploader"
 
