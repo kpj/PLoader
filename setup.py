@@ -17,4 +17,5 @@ setup(name='ploader',
 	test_suite='nose.collector',
 	tests_require=['nose'],
 	scripts=['bin/ploader'],
+	install_requires=['pyyaml', 'rarfile', 'beautifulsoup4']
 )
