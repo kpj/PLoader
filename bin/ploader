@@ -6,7 +6,6 @@ PLoader - a pure cli-based download manager
 
 from ploader.link_loader import LinkLoader
 from ploader.server import Server
-from ploader.commands import web_commands
 import ploader.utils as utils
 
 import asyncore, threading, time
@@ -25,7 +24,7 @@ def main():
 			cur = data["download"]
 			link_handler.create_download(cur["name"], cur["links"], cur["passwd"])
 			answ = "Added links"
-		if "status" in data.keys():
+		elif "status" in data.keys():
 			cur = data["status"]
 			answ = str(link_handler)
 

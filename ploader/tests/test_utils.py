@@ -2,6 +2,7 @@ from unittest import TestCase
 
 import ploader.utils as utils
 
+
 class TestUtils(TestCase):
 	def test_size_formatting(self):
 		self.assertEqual(utils.sizeof_fmt(-1), '-1.0bytes')
