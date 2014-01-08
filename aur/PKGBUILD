@@ -13,8 +13,8 @@ depends=('python')
 makedepends=('python-setuptools')
 checkdepends=('python-nose')
 
-_gitroot="git@github.com:kpj/PLoader.git"
 _gitname="PLoader"
+_gitroot="git@github.com:kpj/$_gitname.git"
 
 build() {
   cd "$srcdir"
