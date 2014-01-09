@@ -56,28 +56,28 @@ class Download(object):
 		if self.get_status() == "success":
 			for ele in self.links:
 				fn = ele["filename"]
-				if fn != "unknown":
-					if rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
-						rar = rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
-						if rar.all_files_present():
-							if rar.is_first_vol():
-								sys.stdout.write("Extracting \"%s\"..." % fn)
-								sys.stdout.flush()
-								try:
-									rar.extract()
-									print(" Done")
-								except rarfile.RarNoFilesError:
-									print(" Fail: No files found")
-								except rarfile.RarCRCError:
-									print(" Fail: CRC error")
-						else:
-							print("Could not find all compressed files for \"%s\"" % fn)
+				if ploader.rar_handler.is_rar(os.path.join(self.dw_dir, fn)):
+					rar = ploader.rar_handler.RAR(os.path.join(self.dw_dir, fn), self.passwd)
+					if rar.all_files_present():
+						if rar.is_first_vol():
+							sys.stdout.write("Extracting \"%s\"..." % fn)
+							sys.stdout.flush()
+							try:
+								rar.extract()
+								print(" Done")
+							except rarfile.RarNoFilesError:
+								print(" Fail: No files found")
+							except rarfile.RarCRCError:
+								print(" Fail: CRC error")
 					else:
-						print("No compression method found for \"%s\"" % fn)
+						print("Could not find all compressed files for \"%s\"" % fn)
 				else:
-					print("Could not estimate filename")
+					print("No decompression method found for \"%s\"" % fn)
 
 	def download(self):
+		"""Handles complete download
+			Puts link to end of list if error occurs
+		"""
 		def load():
 			error_item = None
 			for ele in self.links:
@@ -96,25 +96,21 @@ class Download(object):
 				# set identifiers
 				ele["status"] = "loading"
 				self.loading = True
-				error = False
 
-				# get download link and filename
-				download_link_getter = utils.exe_pipes('plowdown --9kweu ' + settings["captcha-api-key"] + ' -v1 --skip-final --printf "%%f%%n%%d" %s' % link)
-				stdout, stderr = download_link_getter.communicate()
+				# get url info (name, direct link)
+				answ = utils.parse_url_info(*utils.get_url_info(link))
+				error = not answ # answ == False on error
 
-				# try to actually download file
-				res = stdout.decode("utf8").split("\n")
-				if len(res) != 3:
-					print("Error while getting link info: " + repr(stderr.decode("utf8")))
-					error = True
-				else:
+				if not error:
+					# try to actually download file
+					fname, download_link = answ
+
 					if not ele["filename"]:
-						ele["filename"] = res[0]
-					fname = ele["filename"]
-					download_link = res[1]
+						ele["filename"] = fname
 				
 					final_path = os.path.join(self.dw_dir, fname)
 					print("Saving '%s' to '%s'" % (download_link, final_path))
+
 					try:
 						utils.dw_file_to(download_link, final_path, self.handle_download_progress)
 					except Exception as e:
@@ -129,8 +125,8 @@ class Download(object):
 				else:
 					ele["status"] = "success"
 
-				# move error to end of list
 				if error_item:
+					# move error to end of list
 					self.links.remove(error_item)
 					self.links.append(error_item)
 					error_item = None

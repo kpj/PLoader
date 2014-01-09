@@ -13,6 +13,7 @@ class TestUtils(TestCase):
 	def test_url_filename_conversion(self):
 		self.assertEqual(utils.url_to_filename('http://www.catb.org/jargon/html/S/schroedinbug.html'), 'schroedinbug.html')
 		self.assertEqual(utils.url_to_filename('http://www.catb.org/jargon/html/S/'), '')
+		self.assertEqual(utils.url_to_filename('http://www.catb.org'), '')
 
 	def test_link_extractor(self):
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html\n'), ['http://www.catb.org/jargon/html/S/schroedinbug.html'])
@@ -21,3 +22,9 @@ class TestUtils(TestCase):
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html\nhttp://www.catb.org'), ['http://www.catb.org/jargon/html/S/schroedinbug.html', 'http://www.catb.org'])
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html http://www.catb.org'), ['http://www.catb.org/jargon/html/S/schroedinbug.html', 'http://www.catb.org'])
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html-http://www.catb.org'), ['http://www.catb.org/jargon/html/S/schroedinbug.html-http://www.catb.org'])
+
+	def test_urlinfo_parser(self):
+		self.assertFalse(utils.parse_url_info('http://www.google.com/', [], '', 2))
+		self.assertFalse(utils.parse_url_info('http://www.google.com', [], '', 2))
+
+		self.assertEqual(utils.parse_url_info('http://sub.dom.net/my_tar.tar.gz', [], '', 2), ('my_tar.tar.gz', 'http://sub.dom.net/my_tar.tar.gz'))

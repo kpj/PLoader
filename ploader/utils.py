@@ -48,11 +48,43 @@ def write_to_file(path, content):
 	fd.write(content)
 	fd.close()
 
-def get_filename(link):
-	(stdout, stderr) = exe_pipes(["plowprobe", link]).communicate()
-	if len(stdout) > 2:
-		return stdout.decode("utf8").split("\n")[0][2:]
-	return "unknown"
+def get_url_info(url):
+	"""Retrieves information about given url
+	"""
+	settings = load_settings()
+
+	download_link_getter = exe_pipes(
+		'plowdown --9kweu ' +
+		settings["captcha-api-key"] +
+		' -v1 --skip-final --printf "%%f%%n%%d" %s' % url
+	)
+	stdout, stderr = download_link_getter.communicate()
+	res_list = stdout.decode("utf8").split("\n")
+	res_err = stderr.decode("utf8")
+	retc = download_link_getter.returncode
+
+	return url, res_list, res_err, retc
+
+def parse_url_info(url, res_list, res_err, retc):
+	"""Parses information about given url, returns false on error
+	"""
+	if len(res_list) != 3:
+		if retc == 2: # -> No available module
+			fname = url_to_filename(url)
+			if len(fname) != 0:
+				# download file directly
+				return fname, url
+
+		print(
+			"Error while getting link info: " +
+			repr(res_err) +
+			" (" +
+			str(retc) +
+			")"
+		)
+		return False
+	else:
+		return res_list[0], res_list[1]
 
 def load_settings():
 	config = "config.yaml"
