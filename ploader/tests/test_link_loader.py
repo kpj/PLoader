@@ -6,48 +6,90 @@ from ploader.link_loader import LinkLoader
 from ploader.download_handler import Download
 
 
-class TestLinkLoader(TestCase):
-	def setUp(self):
-		self.maxDiff = None
-
-		# sample config
-		self.conf_name = 'config.yaml'
-		conf_cont = """
+def create_config():
+	conf_cont = """
 download-dir: downloads
 captcha-api-key: xyz
 port: 50505"""
-		with open(self.conf_name, 'w') as fd:
-			fd.write(conf_cont)
+	with open('config.yaml', 'w') as fd:
+		fd.write(conf_cont)
 
-		# sample content
-		content = '[{"links": [{"status": "not started", "link": "http://path.to.file/my_file.rar"}], "name": "foo", "passwd": "bar"}]'
-		self.filename = 'test.ploader'
-		with open('test.ploader', 'w') as fd:
-			fd.write(content)
+class TestLinkLoaderNonexistentPloaderFile(TestCase):
+	def setUp(self):
+		# sample config
+		create_config()
 
-
-		self._filename = 'nonexistent.ploader' # test for nonexistent file
-		self.__filename = 'test2.ploader' # other tests
+		self.filename = 'nonexistent.ploader'
 
 		self.link_loader = LinkLoader(self.filename)
 
 	def tearDown(self):
 		os.remove(self.filename)
+		os.remove('config.yaml')
 
-		try:
-			os.remove(self.conf_name)
-		except FileNotFoundError:
-			pass
+	def test_local_data_parser(self):
+		# on empty file
+		self.assertEqual(self.link_loader.data, [])
 
-		try:
-			os.remove(self._filename)
-		except FileNotFoundError:
-			pass
+	def test_append_download(self):
+		# TODO: little hack to reduce amount of work
+		self.link_loader.append_download(Download('42', []))
+		self.assertEqual(len(self.link_loader.data), 1)
 
-		try:
-			os.remove(self.__filename)
-		except FileNotFoundError:
-			pass
+		self.link_loader.append_download([Download('42', [])])
+		self.assertEqual(len(self.link_loader.data), 2)
+
+		self.link_loader.append_download([Download('23', []), Download('42', [])])
+		self.assertEqual(len(self.link_loader.data), 4)
+
+class TestLinkLoaderSpecialPloaderFile(TestCase):
+	def setUp(self):
+		# sample config
+		create_config()
+
+		# sample content
+		content = '[{"name": "foo", "links": [{"link": "http://path.to.file/my_file.rar", "status": "success"}], "passwd": "bar"}, {"name": "bla", "links": [{"link": "http://foo.bar.baz/other_stuff.avi", "filename": null, "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": null, "status": "not started"}], "passwd": "blub"}]'
+		self.filename = 'special.ploader'
+		with open(self.filename, 'w') as fd:
+			fd.write(content)
+
+		self.link_loader = LinkLoader(self.filename)
+
+	def tearDown(self):
+		os.remove(self.filename)
+		os.remove('config.yaml')
+
+	def test_get_unstarted_download(self):
+		sample_dw = Download(
+			'bla',
+			[{"link": "http://foo.bar.baz/other_stuff.avi", "filename": "", "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": "", "status": "not started"}],
+			'blub'
+		)
+
+		# TODO: find better way to compare objects
+		self.assertEqual(
+			repr(self.link_loader.get_unstarted_download()),
+			repr(sample_dw)
+		)
+
+class TestLinkLoader(TestCase):
+	def setUp(self):
+		self.maxDiff = None
+
+		# sample config
+		create_config()
+
+		# sample content
+		content = '[{"links": [{"status": "not started", "link": "http://path.to.file/my_file.rar"}], "name": "foo", "passwd": "bar"}]'
+		self.filename = 'test.ploader'
+		with open(self.filename, 'w') as fd:
+			fd.write(content)
+
+		self.link_loader = LinkLoader(self.filename)
+
+	def tearDown(self):
+		os.remove(self.filename)
+		os.remove('config.yaml')
 
 	def test_local_data_parser(self):
 		# on existing file
@@ -57,11 +99,6 @@ port: 50505"""
 
 			for link in download.links:
 				self.assertEqual(link['link'], 'http://path.to.file/my_file.rar')
-
-		# on empty file
-		_link_loader = LinkLoader(self._filename)
-
-		self.assertEqual(_link_loader.data, [])
 
 	def test_create_download(self):
 		self.link_loader.create_download('bla', ['http://foo.bar.baz/other_stuff.avi', 'http://foo.bar.baz/other_stuff2.avi'], 'blub')
@@ -114,36 +151,3 @@ port: 50505"""
 			content = json.loads(fd.read())
 
 		self.assertEqual(content, json.loads('[{"name": "foo", "links": [{"link": "http://path.to.file/my_file.rar", "status": "not started"}], "passwd": "bar"}, {"name": "bla", "links": [{"link": "http://foo.bar.baz/other_stuff.avi", "filename": null, "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": null, "status": "not started"}], "passwd": "blub"}]'))
-
-	def test_append_download(self):
-		_link_loader = LinkLoader(self._filename)
-
-
-		# TODO: little hack to reduce amount of work
-		_link_loader.append_download(Download('42', []))
-		self.assertEqual(len(_link_loader.data), 1)
-
-		_link_loader.append_download([Download('42', [])])
-		self.assertEqual(len(_link_loader.data), 2)
-
-		_link_loader.append_download([Download('23', []), Download('42', [])])
-		self.assertEqual(len(_link_loader.data), 4)
-
-	def test_get_unstarted_download(self):
-		_content = '[{"name": "foo", "links": [{"link": "http://path.to.file/my_file.rar", "status": "success"}], "passwd": "bar"}, {"name": "bla", "links": [{"link": "http://foo.bar.baz/other_stuff.avi", "filename": null, "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": null, "status": "not started"}], "passwd": "blub"}]'
-		with open(self.__filename, 'w') as fd:
-			fd.write(_content)
-
-		_link_loader = LinkLoader(self.__filename)
-
-		sample_dw = Download(
-			'bla',
-			[{"link": "http://foo.bar.baz/other_stuff.avi", "filename": "", "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": "", "status": "not started"}],
-			'blub'
-		)
-
-		# TODO: find better way to compare objects
-		self.assertEqual(
-			repr(_link_loader.get_unstarted_download()),
-			repr(sample_dw)
-		)
