@@ -86,6 +86,19 @@ def parse_url_info(url, res_list, res_err, retc):
 	else:
 		return res_list[0], res_list[1]
 
+def load_file(url, path, callback):
+	"""Downloads url to file.
+		Returns true on success, otherwise false
+	"""
+	print("Saving '%s' to '%s'" % (url, path))
+
+	try:
+		dw_file_to(url, path, callback)
+		return True
+	except Exception as e:
+		print("Error while downloading: " + str(e))
+		return False
+
 def load_settings():
 	config = "config.yaml"
 	if os.path.isfile(config):

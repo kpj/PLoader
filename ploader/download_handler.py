@@ -104,18 +104,11 @@ class Download(object):
 				if not error:
 					# try to actually download file
 					fname, download_link = answ
-
 					if not ele["filename"]:
 						ele["filename"] = fname
 				
 					final_path = os.path.join(self.dw_dir, fname)
-					print("Saving '%s' to '%s'" % (download_link, final_path))
-
-					try:
-						utils.dw_file_to(download_link, final_path, self.handle_download_progress)
-					except Exception as e:
-						print("Error while downloading: " + str(e))
-						error = True
+					error = not utils.load_file(download_link, final_path, self.handle_download_progress)
 
 				# handle errors if needed
 				self.loading = False
