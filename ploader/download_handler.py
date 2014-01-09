@@ -32,6 +32,9 @@ class Download(object):
 		out += "-> %s\n" % self.dw_dir
 		return out
 
+	def __repr__(self):
+		return repr(str(self))
+
 	def set_save_function(self, save_fun):
 		self.saver = save_fun
 

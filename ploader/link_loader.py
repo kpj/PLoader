@@ -1,4 +1,4 @@
-import pickle, inspect, json
+import json
 import os.path
 
 from ploader.download_handler import Download
@@ -9,24 +9,19 @@ class LinkLoader(object):
 	def __init__(self, path):
 		self.path = utils.set_file(path)
 
-		self.data = self.get_data()
+		self.data = [] # list of Download objects
+		self.get_data() # already stores data in self.data
 
 	def get_data(self):
-#		if os.path.isfile(self.path) and os.path.getsize(self.path) > 0:
-#			return pickle.load(open(self.path, "rb"))
-#		else:
-#			return []
 		data = []
 		if os.path.isfile(self.path) and os.path.getsize(self.path) > 0:
 			local = json.load(open(self.path, "r"))
 			for d in local:
-				dw = Download(d["name"], d["links"], d["passwd"])
-				dw.set_save_function(self.save_data)
-				data.append(dw)
-		return data
+				self.create_download(d["name"], d["links"], d["passwd"])
+		return self.data
 
 	def append_download(self, dw):
-		if type([]) == type(dw):
+		if type(dw) == type([]):
 			self.data.extend(dw)
 		else:
 			self.data.append(dw)
@@ -34,7 +29,6 @@ class LinkLoader(object):
 		self.save_data()
 
 	def save_data(self):
-#		pickle.dump(self.data, open(self.path, "wb"))
 		obj = []
 		for d in self.data:
 			obj.append({
@@ -44,7 +38,12 @@ class LinkLoader(object):
 			})
 		json.dump(obj, open(self.path, "w"))
 
-	def create_download(self, name, link_list, passwd = ""):
+	def parse_link_list(self, link_list):
+		"""Converts simple list of links into appropriate list of containers (if needed)
+		"""
+		if len(link_list) == 0 or type(link_list[0]) == type({}):
+			return link_list
+
 		links = []
 		for link in link_list:
 			o = {}
@@ -52,11 +51,17 @@ class LinkLoader(object):
 			o["status"] = "not started"
 			o["filename"] = None
 			links.append(o)
+		return links
+
+	def create_download(self, name, link_list, passwd=""):
+		links = self.parse_link_list(link_list)
+
 		dw = Download(name, links, passwd)
 		dw.set_save_function(self.save_data)
+
 		self.append_download(dw)
 
-	def get_unstarted_download(self, index):
+	def get_unstarted_download(self, index=0):
 		i = 0
 		for dw in self.data:
 			if index > i:
