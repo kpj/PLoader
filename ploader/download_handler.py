@@ -9,15 +9,15 @@ import ploader.utils as utils
 import ploader.rar_handler, rarfile
 
 
-settings = utils.load_settings();
-
 class Download(object):
 	def __init__(self, name, link_list, passwd = None):
 		self.name = name
 		self.links = link_list
 		self.passwd = passwd
 
-		self.dw_dir = utils.set_dir(os.path.join(settings["download-dir"], self.name.replace(" ", "_")))
+		self.settings = utils.load_settings();
+
+		self.dw_dir = utils.set_dir(os.path.join(self.settings["download-dir"], self.name.replace(" ", "_")))
 		self.log_dir = utils.set_dir(os.path.join(self.dw_dir, "logs"))
 
 		self.saver = None

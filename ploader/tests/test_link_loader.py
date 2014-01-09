@@ -10,13 +10,24 @@ class TestLinkLoader(TestCase):
 	def setUp(self):
 		self.maxDiff = None
 
+		# sample config
+		self.conf_name = 'config.yaml'
+		conf_cont = """
+download-dir: downloads
+captcha-api-key: xyz
+port: 50505"""
+		with open(self.conf_name, 'w') as fd:
+			fd.write(conf_cont)
+
 		# sample content
 		content = '[{"links": [{"status": "not started", "link": "http://path.to.file/my_file.rar"}], "name": "foo", "passwd": "bar"}]'
 		self.filename = 'test.ploader'
 		with open('test.ploader', 'w') as fd:
 			fd.write(content)
 
+
 		self._filename = 'nonexistent.ploader' # test for nonexistent file
+		self.__filename = 'test2.ploader' # other tests
 
 		self.link_loader = LinkLoader(self.filename)
 
@@ -24,7 +35,17 @@ class TestLinkLoader(TestCase):
 		os.remove(self.filename)
 
 		try:
+			os.remove(self.conf_name)
+		except FileNotFoundError:
+			pass
+
+		try:
 			os.remove(self._filename)
+		except FileNotFoundError:
+			pass
+
+		try:
+			os.remove(self.__filename)
 		except FileNotFoundError:
 			pass
 
@@ -110,11 +131,10 @@ class TestLinkLoader(TestCase):
 
 	def test_get_unstarted_download(self):
 		_content = '[{"name": "foo", "links": [{"link": "http://path.to.file/my_file.rar", "status": "success"}], "passwd": "bar"}, {"name": "bla", "links": [{"link": "http://foo.bar.baz/other_stuff.avi", "filename": null, "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": null, "status": "not started"}], "passwd": "blub"}]'
-		_filename = 'test2.ploader'
-		with open('test2.ploader', 'w') as fd:
+		with open(self.__filename, 'w') as fd:
 			fd.write(_content)
 
-		_link_loader = LinkLoader(_filename)
+		_link_loader = LinkLoader(self.__filename)
 
 		sample_dw = Download(
 			'bla',
