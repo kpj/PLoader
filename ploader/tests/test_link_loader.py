@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import os, json
+import os, json, shutil
 
 from ploader.link_loader import LinkLoader
 from ploader.download_handler import Download
@@ -58,6 +58,7 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 	def tearDown(self):
 		os.remove(self.filename)
 		os.remove('config.yaml')
+		shutil.rmtree('downloads')
 
 	def test_get_unstarted_download(self):
 		sample_dw = Download(
@@ -90,6 +91,7 @@ class TestLinkLoader(TestCase):
 	def tearDown(self):
 		os.remove(self.filename)
 		os.remove('config.yaml')
+		shutil.rmtree('downloads')
 
 	def test_local_data_parser(self):
 		# on existing file
