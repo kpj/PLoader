@@ -2,17 +2,11 @@ from unittest import TestCase
 
 import os, json, shutil
 
+from ploader.tests.environment_handler import create_config
+
 from ploader.link_loader import LinkLoader
 from ploader.download_handler import Download
 
-
-def create_config():
-	conf_cont = """
-download-dir: downloads
-captcha-api-key: xyz
-port: 50505"""
-	with open('config.yaml', 'w') as fd:
-		fd.write(conf_cont)
 
 class TestLinkLoaderNonexistentPloaderFile(TestCase):
 	def setUp(self):

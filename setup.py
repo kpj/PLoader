@@ -4,7 +4,8 @@ def readme():
 	with open('README.md') as f:
 		return f.read()
 
-setup(name='ploader',
+setup(
+	name='ploader',
 	version='0.4.0',
 	description='A pure cli-based download manager',
 	long_description=readme(),
@@ -12,7 +13,7 @@ setup(name='ploader',
 	author='kpj',
 	author_email='kpjkpjkpjkpjkpjkpj@gmail.com',
 	license='MIT',
-	packages=['ploader'],
+	packages=['ploader', 'ploader.tests'],
 	zip_safe=False,
 	test_suite='nose.collector',
 	tests_require=['nose'],
