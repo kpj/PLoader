@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import os, json, shutil
 
-from ploader.tests.environment_handler import create_config, handle_cwd
+from ploader.tests.environment_handler import *
 
 from ploader.link_loader import LinkLoader
 from ploader.download_handler import Download

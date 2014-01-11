@@ -13,7 +13,6 @@ port: 50505"""
 def create_http_server(port):
 	httpd = socketserver.TCPServer(("0.0.0.0", port), http.server.SimpleHTTPRequestHandler)
 	thread = threading.Thread(target = httpd.serve_forever)
-	thread.daemon = True
 	thread.start()
 	return httpd
 
