@@ -10,7 +10,7 @@ pkgdesc="A pure cli-based download manager"
 arch=('any')
 url="https://github.com/kpj/PLoader"
 license=('MIT')
-depends=('python')
+depends=('python' 'plowshare' 'unrar')
 makedepends=('python-setuptools')
 checkdepends=('python-nose')
 
