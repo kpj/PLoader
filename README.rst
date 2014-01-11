@@ -8,3 +8,4 @@ CLI download manager written in python. It serves as a front-end to plowshare (e
 Links
 -----
 PyPi Homepage: https://pypi.python.org/pypi/ploader
+Travis CI: https://travis-ci.org/kpj/PLoader
