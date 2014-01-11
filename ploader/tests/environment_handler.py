@@ -1,6 +1,8 @@
 import http.server, threading, socketserver
 import os
 
+from ploader.utils import set_config_path
+
 
 def create_http_server(port):
 	httpd = socketserver.TCPServer(("0.0.0.0", port), http.server.SimpleHTTPRequestHandler)
@@ -15,3 +17,4 @@ def handle_cwd(path='ploader/tests/cwd'):
 		os.chdir(path)
 	except FileNotFoundError:
 		pass
+	set_config_path('../../../config.yaml')

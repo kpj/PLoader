@@ -13,7 +13,6 @@ __pycache__
 /aur/src/
 
 # local stuff
-config.yaml
 *.ploader
 /OLD/
 clean.sh

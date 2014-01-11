@@ -110,6 +110,7 @@ def set_config_path(path):
 	config_path = path
 
 def load_settings():
+	# set_config_path(..) *must* be called by now
 	if os.path.isfile(config_path):
 		return yaml.load(open(config_path, "r"))
 	else:
