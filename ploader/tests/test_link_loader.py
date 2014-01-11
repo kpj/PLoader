@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import os, json, shutil
 
-from ploader.tests.environment_handler import create_config
+from ploader.tests.environment_handler import create_config, handle_cwd
 
 from ploader.link_loader import LinkLoader
 from ploader.download_handler import Download
@@ -10,6 +10,8 @@ from ploader.download_handler import Download
 
 class TestLinkLoaderNonexistentPloaderFile(TestCase):
 	def setUp(self):
+		handle_cwd()
+
 		# sample config
 		create_config()
 
@@ -38,6 +40,8 @@ class TestLinkLoaderNonexistentPloaderFile(TestCase):
 
 class TestLinkLoaderSpecialPloaderFile(TestCase):
 	def setUp(self):
+		handle_cwd()
+
 		# sample config
 		create_config()
 
@@ -70,6 +74,8 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 class TestLinkLoader(TestCase):
 	def setUp(self):
 		self.maxDiff = None
+
+		handle_cwd()
 
 		# sample config
 		create_config()
