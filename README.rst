@@ -10,6 +10,7 @@ Installation
 Using pip:
 
   $ pip install ploader
+  
 Using pacman (archlinux):
 
   $ mkdir PLoader && cd PLoader/
