@@ -106,7 +106,8 @@ def load_file(url, path, callback):
 		return False
 
 def load_settings():
-	config = "config.yaml"
+	user_dir = os.path.expanduser('~')
+	config = '%s/.ploader.conf' % user_dir
 	if os.path.isfile(config):
 		return yaml.load(open(config, "r"))
 	else:
