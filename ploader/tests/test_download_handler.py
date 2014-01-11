@@ -14,7 +14,6 @@ class TestDownloadStateful(TestCase):
 	def setUp(self):
 		handle_cwd()
 
-		create_config()
 		self.port = 9888
 
 		self.httpd = create_http_server(self.port)
@@ -26,7 +25,6 @@ class TestDownloadStateful(TestCase):
 		self.httpd.shutdown()
 
 		os.remove(self.filename)
-		os.remove('config.yaml')
 
 	def test_download_unrar_nopw(self):
 		self.link_loader.create_download(
@@ -62,11 +60,6 @@ class TestDownloadStateful(TestCase):
 class TestDownloadStateless(TestCase):
 	def setUp(self):
 		handle_cwd()
-
-		create_config()
-
-	def tearDown(self):
-		os.remove('config.yaml')
 
 	def test_get_status(self):
 		# incomplete list arguments

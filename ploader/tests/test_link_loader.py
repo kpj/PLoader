@@ -12,16 +12,12 @@ class TestLinkLoaderNonexistentPloaderFile(TestCase):
 	def setUp(self):
 		handle_cwd()
 
-		# sample config
-		create_config()
-
 		self.filename = 'nonexistent.ploader'
 
 		self.link_loader = LinkLoader(self.filename)
 
 	def tearDown(self):
 		os.remove(self.filename)
-		os.remove('config.yaml')
 
 	def test_local_data_parser(self):
 		# on empty file
@@ -42,9 +38,6 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 	def setUp(self):
 		handle_cwd()
 
-		# sample config
-		create_config()
-
 		# sample content
 		content = '[{"name": "foo", "links": [{"link": "http://path.to.file/my_file.rar", "status": "success"}], "passwd": "bar"}, {"name": "bla", "links": [{"link": "http://foo.bar.baz/other_stuff.avi", "filename": null, "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": null, "status": "not started"}], "passwd": "blub"}]'
 		self.filename = 'special.ploader'
@@ -55,7 +48,6 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 
 	def tearDown(self):
 		os.remove(self.filename)
-		os.remove('config.yaml')
 		shutil.rmtree('downloads')
 
 	def test_get_unstarted_download(self):
@@ -77,9 +69,6 @@ class TestLinkLoader(TestCase):
 
 		handle_cwd()
 
-		# sample config
-		create_config()
-
 		# sample content
 		content = '[{"links": [{"status": "not started", "link": "http://path.to.file/my_file.rar"}], "name": "foo", "passwd": "bar"}]'
 		self.filename = 'test.ploader'
@@ -90,7 +79,6 @@ class TestLinkLoader(TestCase):
 
 	def tearDown(self):
 		os.remove(self.filename)
-		os.remove('config.yaml')
 		shutil.rmtree('downloads')
 
 	def test_local_data_parser(self):

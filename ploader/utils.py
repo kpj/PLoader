@@ -108,16 +108,13 @@ def load_file(url, path, callback):
 def load_settings():
 	user_dir = os.path.expanduser('~')
 	config = '%s/.ploader.conf' % user_dir
+
 	if os.path.isfile(config):
 		return yaml.load(open(config, "r"))
 	else:
-		basic_conf = """download-dir: downloads
-captcha-api-key: xyz
-port: 50505"""
-		fd = open(config, "w")
-		fd.write(basic_conf)
-		fd.close()
-		raise Exception("No config file present, created one for you :-)")
+		# return defaults
+		print('No config file present, returning defaults (default path: %s)' % config)
+		return {'download-dir': './downloads', 'captcha-api-key': 'xyz', 'port': 50505}
 
 def clean_links(raw_data):
 	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)
