@@ -8,10 +8,24 @@ from ploader.link_loader import LinkLoader
 from ploader.server import Server
 import ploader.utils as utils
 
-import asyncore, threading, time
+import asyncore, threading, time, argparse, os
 
 
 def main():
+	# setup argparse
+	parser = argparse.ArgumentParser(description='CLI download manager written in python')
+	user_dir = os.path.expanduser('~')
+	default_config_path = '%s/.ploader.conf' % user_dir
+	parser.add_argument(
+		'-f',
+		'--config',
+		help='Specify path to config',
+		default=default_config_path
+	)
+	args = parser.parse_args()
+	utils.set_config_path(args.config)
+
+	# setup program
 	settings = utils.load_settings()
 
 	link_handler = LinkLoader("link_list.ploader")

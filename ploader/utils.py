@@ -105,12 +105,13 @@ def load_file(url, path, callback):
 		print("Error while downloading: " + str(e))
 		return False
 
-def load_settings():
-	user_dir = os.path.expanduser('~')
-	config = '%s/.ploader.conf' % user_dir
+def set_config_path(path):
+	global config_path
+	config_path = path
 
-	if os.path.isfile(config):
-		return yaml.load(open(config, "r"))
+def load_settings():
+	if os.path.isfile(config_path):
+		return yaml.load(open(config_path, "r"))
 	else:
 		# return defaults
 		print('No config file present, returning defaults (default path: %s)' % config)
