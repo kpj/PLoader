@@ -53,15 +53,20 @@ def get_url_info(url):
 	"""
 	settings = load_settings()
 
-	download_link_getter = exe_pipes(
-		'plowdown --9kweu ' +
-		settings["captcha-api-key"] +
-		' -v1 --skip-final --printf "%%f%%n%%d" %s' % url
-	)
-	stdout, stderr = download_link_getter.communicate()
-	res_list = stdout.decode("utf8").split("\n")
-	res_err = stderr.decode("utf8")
-	retc = download_link_getter.returncode
+	try:
+		download_link_getter = exe_pipes(
+			'plowdown --9kweu ' +
+			settings["captcha-api-key"] +
+			' -v1 --skip-final --printf "%%f%%n%%d" %s' % url
+		)
+		stdout, stderr = download_link_getter.communicate()
+		res_list = stdout.decode("utf8").split("\n")
+		res_err = stderr.decode("utf8")
+		retc = download_link_getter.returncode
+	except:
+		# nasty hack to try to download file directly if plowshare is not installed (TODO: make this better!)
+		res_list = []
+		retc = 2
 
 	return url, res_list, res_err, retc
 
@@ -69,7 +74,7 @@ def parse_url_info(url, res_list, res_err, retc):
 	"""Parses information about given url, returns false on error
 	"""
 	if len(res_list) != 3:
-		if retc == 2: # -> No available module
+		if retc == 2: # -> No available module (or nasty hack)
 			fname = url_to_filename(url)
 			if len(fname) != 0:
 				# download file directly
