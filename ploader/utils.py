@@ -67,6 +67,7 @@ def get_url_info(url):
 		# nasty hack to try to download file directly if plowshare is not installed (TODO: make this better!)
 		res_list = []
 		retc = 2
+		res_err = ''
 
 	return url, res_list, res_err, retc
 
