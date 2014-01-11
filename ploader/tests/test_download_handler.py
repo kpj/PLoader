@@ -41,7 +41,7 @@ class TestDownloadStateful(TestCase):
 
 		self.assertCountEqual(os.listdir('downloads/NoPasswordNeeded'), ['NoPasswd.rar', 'happy.file', 'logs'])
 
-	def test_download_unrar_nopw(self):
+	def test_download_unrar_withpw(self):
 		self.link_loader.create_download(
 			'IndeedPasswordNeeded',
 			['http://localhost:' + str(self.port) + '/WithPasswd.rar'],
