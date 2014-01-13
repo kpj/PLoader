@@ -115,7 +115,7 @@ def load_settings():
 		return yaml.load(open(config_path, "r"))
 	else:
 		# return defaults
-		print('No config file present, returning defaults (default path: %s)' % config)
+		print('No config file present, returning defaults (default path: %s)' % config_path)
 		return {'download-dir': './downloads', 'captcha-api-key': 'xyz', 'port': 50505}
 
 def clean_links(raw_data):
