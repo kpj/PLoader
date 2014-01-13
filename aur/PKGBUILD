@@ -2,40 +2,34 @@
 PACKAGER="kpj <kpjkpjkpjkpjkpjkpj@gmail.com>"
 
 _pkgname="ploader"
+_gitname="PLoader"
 
 pkgname="python-$_pkgname-git"
-pkgver=0.4.0
-pkgrel=1
+pkgver=85.8e750ee
+pkgrel=2
 pkgdesc="A pure cli-based download manager"
 arch=('any')
 url="https://github.com/kpj/PLoader"
 license=('MIT')
 depends=('python' 'plowshare' 'unrar')
-makedepends=('python-setuptools')
+conflicts=('ploader')
+provides=('ploader')
+makedepends=('python-setuptools' 'git')
 checkdepends=('python-nose')
+source=('git+https://github.com/kpj/PLoader')
+md5sums=('SKIP')
 
-_gitname="PLoader"
-_gitroot="git@github.com:kpj/${_gitname}.git"
 
-build() {
-  cd "$srcdir"
-  msg "Connecting to GIT server...."
-  
-  if [[ -d "$_gitname" ]]; then
-    cd "$_gitname" && git pull origin
-    msg "The local files are updated."
-  else
-    git clone "$_gitroot" "$_gitname"
-  fi
-
-  msg "GIT checkout done or server timeout"
+pkgver() {
+    cd $_gitname
+    echo $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
 }
 
 package() {
-  cd "${srcdir}/$_gitname"
+    cd "${srcdir}/$_gitname"
 
-  python setup.py install --root="${pkgdir}"
+    python setup.py install --root="${pkgdir}"
 
-  install -m755 -d "${pkgdir}/usr/share/licenses/python-ploader-git"
-  install -m644 LICENSE "${pkgdir}/usr/share/licenses/python-ploader-git/"
+    install -m755 -d "${pkgdir}/usr/share/licenses/python-ploader-git"
+    install -m644 LICENSE "${pkgdir}/usr/share/licenses/python-ploader-git/"
 }
