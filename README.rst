@@ -7,11 +7,17 @@ CLI download manager written in python. It serves as a front-end to plowshare (e
 
 Installation
 ------------
-Using pip:
+Using pip
++++++++++
 
   $ pip install ploader
   
-Using pacman (archlinux):
+Using pacman (archlinux)
+++++++++++++++++++++++++
+
+  $ yaourt -S python-ploader-git
+  
+or
 
   $ mkdir PLoader && cd PLoader/
   
@@ -27,3 +33,5 @@ Links
 PyPi Homepage: https://pypi.python.org/pypi/ploader
 
 Travis CI: https://travis-ci.org/kpj/PLoader
+
+AUR: https://aur.archlinux.org/packages/python-ploader-git/
