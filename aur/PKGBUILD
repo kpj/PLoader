@@ -5,8 +5,8 @@ _pkgname="ploader"
 _gitname="PLoader"
 
 pkgname="python-$_pkgname-git"
-pkgver=85.8e750ee
-pkgrel=2
+pkgver=r88.078ae06
+pkgrel=3
 pkgdesc="A pure cli-based download manager"
 arch=('any')
 url="https://github.com/kpj/PLoader"
@@ -22,7 +22,7 @@ md5sums=('SKIP')
 
 pkgver() {
     cd $_gitname
-    echo $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 package() {
