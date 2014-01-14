@@ -6,7 +6,7 @@ def readme():
 
 setup(
 	name='ploader',
-	version='0.4.0',
+	version='0.5.0',
 	description='A pure cli-based download manager',
 	long_description=readme(),
 	url='https://github.com/kpj/PLoader',
