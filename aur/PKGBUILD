@@ -5,7 +5,7 @@ _pkgname="ploader"
 _gitname="PLoader"
 
 pkgname="python-$_pkgname-git"
-pkgver=r89.e5907f4
+pkgver=r91.95be946
 pkgrel=1
 pkgdesc="A pure cli-based download manager"
 arch=('any')
