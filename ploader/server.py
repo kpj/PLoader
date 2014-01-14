@@ -11,14 +11,17 @@ class Client(asyncore.dispatcher_with_send):
 	def __init__(self, sock, callback):
 		super().__init__(sock)
 		self.sock = sock
-
 		self.callback = callback
-
 		self.cur_command = None
+
+		self.command_string = "/".join(interface_commands)
+
+		# send welcome
+		self.send(("Welcome (try %s)\n" % self.command_string).encode(encoding='UTF-8'))
 
 	def handle_read(self):
 		data = self.recv(8192)
-		answ = "I don't know what to do... (try add/stats)"
+		answ = "I don't know what to do... (try %s)" % self.command_string
 
 		if data:
 			inp = data.decode(encoding='UTF-8').rstrip("\n")

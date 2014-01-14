@@ -26,7 +26,7 @@ def main():
 	utils.set_config_path(args.config)
 
 	# setup program
-	settings = utils.load_settings()
+	settings = utils.load_config()
 
 	link_handler = LinkLoader("link_list.ploader")
 

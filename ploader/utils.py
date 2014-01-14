@@ -51,7 +51,7 @@ def write_to_file(path, content):
 def get_url_info(url):
 	"""Retrieves information about given url
 	"""
-	settings = load_settings()
+	settings = load_config()
 
 	try:
 		download_link_getter = exe_pipes(
@@ -109,14 +109,26 @@ def set_config_path(path):
 	global config_path
 	config_path = path
 
-def load_settings():
+def load_config():
 	# set_config_path(..) *must* be called by now
 	if os.path.isfile(config_path):
 		return yaml.load(open(config_path, "r"))
 	else:
 		# return defaults
-		print('No config file present, returning defaults (default path: %s)' % config_path)
-		return {'download-dir': './downloads', 'captcha-api-key': 'xyz', 'port': 50505}
+		print('No config file present, creating default one (path: %s)' % config_path)
+		create_default_config(config_path)
+		
+		try:
+			return yaml.load(open(config_path, "r"))
+		except:
+			raise Exception('[FATAL] - Could not create config (path: %s)' %  config_path)
+
+def create_default_config(path='./config.yaml'):
+	basic_conf = """download-dir: downloads
+captcha-api-key: xyz
+port: 50505"""
+	with open(path, 'w') as fd:
+		fd.write(basic_conf)
 
 def clean_links(raw_data):
 	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)
