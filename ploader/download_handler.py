@@ -15,7 +15,7 @@ class Download(object):
 		self.links = link_list
 		self.passwd = passwd
 
-		self.settings = utils.load_settings();
+		self.settings = utils.load_config();
 
 		self.dw_dir = utils.set_dir(os.path.join(self.settings["download-dir"], self.name.replace(" ", "_")))
 		self.log_dir = utils.set_dir(os.path.join(self.dw_dir, "logs"))

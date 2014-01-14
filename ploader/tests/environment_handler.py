@@ -18,3 +18,10 @@ def handle_cwd(path='ploader/tests/cwd'):
 	except FileNotFoundError:
 		pass
 	set_config_path('../../../config.yaml')
+
+def create_test_config(path='./config.yaml'):
+	basic_conf = """download-dir: somewhere
+captcha-api-key: foo
+port: 42424"""
+	with open(path, 'w') as fd:
+		fd.write(basic_conf)
