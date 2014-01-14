@@ -30,6 +30,8 @@ or
 
 Links
 -----
+Github: https://github.com/kpj/PLoader
+
 PyPi Homepage: https://pypi.python.org/pypi/ploader
 
 Travis CI: https://travis-ci.org/kpj/PLoader
