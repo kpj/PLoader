@@ -27,6 +27,9 @@ or
   
   $ sudo pacman -U python-ploader-git-*-any.pkg.tar.xz
 
+Bug Reports
+-----------
+Please submit any bugs you find to https://github.com/kpj/PLoader/issues.
 
 Links
 -----
