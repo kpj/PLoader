@@ -1,6 +1,16 @@
 PLoader
 =======
+.. image:: https://pypip.in/v/ploader/badge.png
+    :target: https://crate.io/packages/ploader/
+    :alt: Latest version
+
 .. image:: https://api.travis-ci.org/kpj/PLoader.png?branch=master
+    :target: https://travis-ci.org/kpj/PLoader
+    :alt: Travis-CI
+    
+.. image:: https://pypip.in/d/ploader/badge.png
+    :target: https://crate.io/packages/ploader/
+    :alt: Number of PyPI downloads
 
 CLI download manager written in python. It serves as a front-end to plowshare (especially plowdown) which handles the actual download.
 
