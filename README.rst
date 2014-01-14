@@ -1,4 +1,4 @@
-PLoader
+MPI_WtimePLoader
 =======
 .. image:: https://api.travis-ci.org/kpj/PLoader.png?branch=master
 
@@ -27,6 +27,21 @@ or
   
   $ sudo pacman -U python-ploader-git-*-any.pkg.tar.xz
 
+Usage
+-----
+Start server on 192.168.2.1, assume it listens on port 50505 (specified in ~/.ploader.conf)
+
+  $ ploader
+  
+To connect from the same machine, execute
+
+  $ nc localhost 50505
+  
+or, to connect from a different machine, execute
+
+  $ nc 192.168.2.1 50505
+  
+A welcome message will show up and display the available commands
 
 Links
 -----
