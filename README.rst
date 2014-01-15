@@ -23,6 +23,12 @@ Using pip
 
   $ pip install ploader
   
+Using easy_install
+++++++++++++++++++
+::
+
+  $ easy_install ploader
+  
 Using pacman (archlinux)
 ++++++++++++++++++++++++
 ::
