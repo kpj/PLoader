@@ -22,6 +22,8 @@ class TestUtils(TestCase):
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html\nhttp://www.catb.org'), ['http://www.catb.org/jargon/html/S/schroedinbug.html', 'http://www.catb.org'])
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html http://www.catb.org'), ['http://www.catb.org/jargon/html/S/schroedinbug.html', 'http://www.catb.org'])
 		self.assertEqual(utils.clean_links('http://www.catb.org/jargon/html/S/schroedinbug.html-http://www.catb.org'), ['http://www.catb.org/jargon/html/S/schroedinbug.html-http://www.catb.org'])
+		self.assertEqual(utils.clean_links('https://www.catb.org/jargon/html/S/schroedinbug.html\nhttps://www.catb.org'), ['https://www.catb.org/jargon/html/S/schroedinbug.html', 'https://www.catb.org'])
+		self.assertEqual(utils.clean_links('ftp://www.catb.org/jargon/html/S/schroedinbug.html\nftp://www.catb.org'), ['ftp://www.catb.org/jargon/html/S/schroedinbug.html', 'ftp://www.catb.org'])
 
 	def test_urlinfo_parser(self):
 		self.assertFalse(utils.parse_url_info('http://www.google.com/', [], '', 2))

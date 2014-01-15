@@ -75,7 +75,7 @@ def parse_url_info(url, res_list, res_err, retc):
 	"""Parses information about given url, returns false on error
 	"""
 	if len(res_list) != 3:
-		if retc == 2: # -> No available module (or nasty hack)
+		if retc == 2 or retc == 0: # -> No available module or something weird (e.g. ftp)
 			fname = url_to_filename(url)
 			if len(fname) != 0:
 				# download file directly
@@ -131,7 +131,7 @@ port: 50505"""
 		fd.write(basic_conf)
 
 def clean_links(raw_data):
-	return re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)
+	return re.findall('(?:ftp|https|http)?://(?:[a-zA-Z]|[0-9]|[$-_@.&+~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)
 
 def url_to_filename(url):
 	res = urllib.parse.urlparse(url)
