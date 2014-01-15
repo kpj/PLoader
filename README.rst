@@ -12,7 +12,7 @@ PLoader
     :target: https://crate.io/packages/ploader/
     :alt: Number of PyPI downloads
 
-CLI download manager written in python. It serves as a front-end to plowshare (especially plowdown) which handles the actual download.
+CLI download manager written in python. It makes use of plowshare (especially plowdown) which handles the link detection.
 
 
 Installation
