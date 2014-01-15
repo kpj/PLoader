@@ -1,5 +1,6 @@
 import json
 import os.path
+import threading
 
 from ploader.download_handler import Download
 import ploader.utils as utils
@@ -11,6 +12,8 @@ class LinkLoader(object):
 
 		self.data = [] # list of Download objects
 		self.get_data() # already stores data in self.data
+
+		self.settings = utils.load_config()
 
 	def get_data(self):
 		data = []
@@ -61,17 +64,39 @@ class LinkLoader(object):
 
 		self.append_download(dw)
 
-	def get_unstarted_download(self, index=0):
+	def get_unstarted_downloads(self, index=0):
 		i = 0
+		res = []
 		for dw in self.data:
 			if index > i:
 				if dw.get_status() != "success":
 					i += 1
 			else:
 				if dw.get_status() != "success":
-					return dw
+					dw.acquired = True
+					res.append(dw)
 				i += 1
-		return None
+		return res
+
+	def try_download(self):
+		"""Start all available downloads and return immediately,
+			if multithreading is enabled
+			Process one after another in order and check for new downloads afterwards (and process them if needed),
+			if multithreading is not enabled
+		"""
+		next_dw_list = self.get_unstarted_downloads()
+
+		while len(next_dw_list) != 0:
+			for next_dw in next_dw_list:
+				if self.settings["multithreading"]:
+					utils.start_thread(next_dw.execute)
+				else:
+					next_dw.execute()
+
+			if self.settings["multithreading"]:
+				break
+			else:
+				next_dw_list = self.get_unstarted_downloads()
 
 	def __str__(self):
 		return "\n".join([str(dw) for dw in (self.data)])

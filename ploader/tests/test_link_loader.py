@@ -59,8 +59,18 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 
 		# TODO: find better way to compare objects
 		self.assertEqual(
-			repr(self.link_loader.get_unstarted_download()),
+			repr(self.link_loader.get_unstarted_downloads()[0]),
 			repr(sample_dw)
+		)
+
+	def test_get_unstarted_downloads(self):
+		# add two downloads to queue containing one already existing download
+		self.link_loader.create_download('bla', ['http://foo.bar.baz/other_stuff.avi', 'http://foo.bar.baz/other_stuff2.avi'], 'blub')
+		self.link_loader.create_download('bla', ['http://foo.bar.baz/other_stuff.avi', 'http://foo.bar.baz/other_stuff2.avi'], 'blub')
+
+		self.assertEqual(
+			len(self.link_loader.get_unstarted_downloads()),
+			3
 		)
 
 class TestLinkLoader(TestCase):

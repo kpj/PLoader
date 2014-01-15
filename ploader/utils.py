@@ -1,4 +1,4 @@
-import subprocess, os, os.path, yaml, shlex, re, urllib.parse, shutil, urllib.request
+import subprocess, os, os.path, yaml, shlex, re, urllib.parse, shutil, urllib.request, threading
 
 
 def exe(cmd):
@@ -126,7 +126,8 @@ def load_config():
 def create_default_config(path='./config.yaml'):
 	basic_conf = """download-dir: downloads
 captcha-api-key: xyz
-port: 50505"""
+port: 50505
+multithreading: False"""
 	with open(path, 'w') as fd:
 		fd.write(basic_conf)
 
@@ -138,8 +139,12 @@ def url_to_filename(url):
 	return os.path.basename(res.path)
 
 def sizeof_fmt(num):
-    for x in ['bytes','KB','MB','GB']:
-        if num < 1024.0:
-            return "%3.1f%s" % (num, x)
-        num /= 1024.0
-    return "%3.1f%s" % (num, 'TB')
+	for x in ['bytes','KB','MB','GB']:
+		if num < 1024.0:
+			return "%3.1f%s" % (num, x)
+		num /= 1024.0
+	return "%3.1f%s" % (num, 'TB')
+
+def start_thread(func):
+	thread = threading.Thread(target = func)
+	thread.start()

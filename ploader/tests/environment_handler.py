@@ -22,6 +22,7 @@ def handle_cwd(path='ploader/tests/cwd'):
 def create_test_config(path='./config.yaml'):
 	basic_conf = """download-dir: somewhere
 captcha-api-key: foo
-port: 42424"""
+port: 42424
+multithreading: True"""
 	with open(path, 'w') as fd:
 		fd.write(basic_conf)

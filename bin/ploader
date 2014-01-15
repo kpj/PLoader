@@ -9,7 +9,7 @@ from ploader.server import Server
 import ploader.utils as utils
 
 import asyncore, threading, time, argparse, os
-
+	
 
 def main():
 	# setup argparse
@@ -38,6 +38,8 @@ def main():
 			cur = data["download"]
 			link_handler.create_download(cur["name"], cur["links"], cur["passwd"])
 			answ = "Added links"
+
+			link_handler.try_download()
 		elif "status" in data.keys():
 			cur = data["status"]
 			answ = str(link_handler)
@@ -52,13 +54,9 @@ def main():
 	server.start()
 	print("Server running")
 
-	while True:
-		next_dw = link_handler.get_unstarted_download()
-		if next_dw != None:
-			next_dw.download()
-			next_dw.unpack()
-		else:
-			time.sleep(10)
+	link_handler.try_download()
+
+	server.join() # waits for server to terminate (only happens on user input)
 
 
 if __name__ == "__main__":

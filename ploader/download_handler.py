@@ -24,6 +24,8 @@ class Download(object):
 
 		self.cur_item = None
 
+		self.acquired = False
+
 	def __str__(self):
 		out = "\n"
 		out += "%s (%i) - %s\n" % (self.name, len(self.links), self.passwd)
@@ -50,10 +52,14 @@ class Download(object):
 		for ele in self.links:
 			if ele["status"] != "not started":
 				nots = False
-		if nots:
+		if nots and not self.acquired:
 			return "not started"
 
 		return "loading"
+
+	def execute(self):
+		self.download()
+		self.unpack()
 
 	def unpack(self):
 		if self.get_status() == "success":
@@ -81,58 +87,53 @@ class Download(object):
 		"""Handles complete download
 			Puts link to end of list if error occurs
 		"""
-		def load():
-			error_item = None
-			for ele in self.links:
-				if ele["status"] == "success":
-					# skip if already successfully downloaded
-					continue
+		error_item = None
+		for ele in self.links:
+			if ele["status"] == "success":
+				# skip if already successfully downloaded
+				continue
 
-				# init progress bar
-				ele["progress"] = "-"
-				self.cur_item = ele
+			# init progress bar
+			ele["progress"] = "-"
+			self.cur_item = ele
 
-				# get item info
-				link = ele["link"]
-				fname = ele["filename"]
+			# get item info
+			link = ele["link"]
+			fname = ele["filename"]
 
-				# set identifiers
-				ele["status"] = "loading"
-				self.loading = True
+			# set identifiers
+			ele["status"] = "loading"
+			self.loading = True
 
-				# get url info (name, direct link)
-				answ = utils.parse_url_info(*utils.get_url_info(link))
-				error = not answ # answ == False on error
+			# get url info (name, direct link)
+			answ = utils.parse_url_info(*utils.get_url_info(link))
+			error = not answ # answ == False on error
 
-				if not error:
-					# try to actually download file
-					fname, download_link = answ
-					if not ele["filename"]:
-						ele["filename"] = fname
-				
-					final_path = os.path.join(self.dw_dir, fname)
-					error = not utils.load_file(download_link, final_path, self.handle_download_progress)
+			if not error:
+				# try to actually download file
+				fname, download_link = answ
+				if not ele["filename"]:
+					ele["filename"] = fname
+			
+				final_path = os.path.join(self.dw_dir, fname)
+				error = not utils.load_file(download_link, final_path, self.handle_download_progress)
 
-				# handle errors if needed
-				self.loading = False
-				if error:
-					ele["status"] = "error"
-					error_item = ele
-				else:
-					ele["status"] = "success"
+			# handle errors if needed
+			self.loading = False
+			if error:
+				ele["status"] = "error"
+				error_item = ele
+			else:
+				ele["status"] = "success"
 
-				if error_item:
-					# move error to end of list
-					self.links.remove(error_item)
-					self.links.append(error_item)
-					error_item = None
+			if error_item:
+				# move error to end of list
+				self.links.remove(error_item)
+				self.links.append(error_item)
+				error_item = None
 
-				# save current changes
-				self.saver()
-
-#		self.thread = threading.Thread(target = load)
-#		self.thread.start()
-		load()
+			# save current changes
+			self.saver()
 
 	def handle_download_progress(self, loaded_block_num, block_size, total_size):
 		self.cur_item["progress"] = str(utils.sizeof_fmt(loaded_block_num * block_size)) + "/" + str(utils.sizeof_fmt(total_size))

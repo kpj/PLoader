@@ -2,3 +2,5 @@ download-dir: downloads
 captcha-api-key: xyz
 
 port: 50505
+
+multithreading: False
