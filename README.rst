@@ -73,3 +73,4 @@ Links
 - PyPi Homepage: https://pypi.python.org/pypi/ploader
 - Travis CI: https://travis-ci.org/kpj/PLoader
 - AUR: https://aur.archlinux.org/packages/python-ploader-git/
+- IRC: #ploader on irc.freenode.net
