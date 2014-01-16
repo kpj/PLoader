@@ -19,7 +19,7 @@ def handle_cwd(path='ploader/tests/cwd'):
 		pass
 	set_config_path('../../../config.yaml')
 
-def create_test_config(path='./config.yaml'):
+def create_case_config(path='./config.yaml'):
 	basic_conf = """download-dir: somewhere
 captcha-api-key: foo
 port: 42424

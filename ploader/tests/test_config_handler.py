@@ -9,15 +9,16 @@ import ploader.utils as utils
 class TestExistingConfig(TestCase):
 	def setUp(self):
 		handle_cwd()
-		self.config = './ploader.yaml'
 
-		create_test_config(self.config)
+		self.config = './ploader.yaml'
+		utils.set_config_path(self.config)
+
+		create_case_config(self.config)
 
 	def tearDown(self):
 		os.remove(self.config)
 
 	def test_normal_loading(self):
-		utils.set_config_path(self.config)
 		settings = utils.load_config()
 
 		self.assertEqual(settings['port'], 42424)
@@ -30,12 +31,12 @@ class TestNonexistentConfig(TestCase):
 		handle_cwd()
 
 		self.config = 'candybar.ploader'
+		utils.set_config_path(self.config)
 
 	def tearDown(self):
 		os.remove(self.config)
 
 	def test_default_loading(self):
-		utils.set_config_path(self.config)
 		settings = utils.load_config()
 
 		self.assertEqual(settings['port'], 50505)
