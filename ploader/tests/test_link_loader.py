@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import os, json, shutil
+import os, json, shutil, threading
 
 from ploader.tests.environment_handler import *
 
@@ -151,3 +151,25 @@ class TestLinkLoader(TestCase):
 			content = json.loads(fd.read())
 
 		self.assertEqual(content, json.loads('[{"name": "foo", "links": [{"link": "http://path.to.file/my_file.rar", "status": "not started"}], "passwd": "bar"}, {"name": "bla", "links": [{"link": "http://foo.bar.baz/other_stuff.avi", "filename": null, "status": "not started"}, {"link": "http://foo.bar.baz/other_stuff2.avi", "filename": null, "status": "not started"}], "passwd": "blub"}]'))
+
+class TestMultithreading(TestCase):
+	def setUp(self):
+		handle_cwd()
+
+		# sample content
+		content = '[{"links": [{"filename": null, "status": "not started", "link": "http://path.to.file/my_file.rar"}], "name": "foo", "passwd": "bar"}]'
+		self.filename = 'test.ploader'
+		with open(self.filename, 'w') as fd:
+			fd.write(content)
+
+		self.link_loader = LinkLoader(self.filename)
+		self.link_loader.settings["multithreading"] = True
+
+	def tearDown(self):
+		os.remove(self.filename)
+		shutil.rmtree('downloads')
+
+	def test_multithreading(self):
+		self.link_loader.try_download()
+
+		self.assertEqual(threading.active_count(), 2) # not 3 since there is no running server
