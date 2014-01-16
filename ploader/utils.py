@@ -147,4 +147,5 @@ def sizeof_fmt(num):
 
 def start_thread(func):
 	thread = threading.Thread(target = func)
+	thread.daemon = True
 	thread.start()
