@@ -1,5 +1,10 @@
+import os
+
 from unittest import TestCase
 
+from ploader.tests.environment_handler import *
+
+import ploader.utils as utils
 from ploader.commands import interface_commands
 
 
@@ -135,4 +140,28 @@ class TestServerCommandStats(TestCase):
 		self.assertEqual(
 			self.command.execute('stats'),
 			('return', 'status')
+		)
+
+class TestServerCommandConfig(TestCase):
+	def setUp(self):
+		handle_cwd()
+
+		self.config = "./ploader.conf"
+		utils.set_config_path(self.config)
+		create_case_config(self.config)
+
+		self.command = interface_commands['config']()
+
+	def tearDown(self):
+		os.remove(self.config)
+
+	def test_execute(self):
+		self.assertEqual(
+			self.command.execute(),
+			('return', 'config')
+		)
+
+		self.assertEqual(
+			self.command.execute(),
+			{'download-dir': 'somewhere', 'captcha-api-key': 'foo', 'port': 42424, 'multithreading': True}
 		)

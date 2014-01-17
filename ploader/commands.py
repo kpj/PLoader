@@ -98,8 +98,20 @@ class CommandStats(Command):
 		elif self.state == "get_obj":
 			return shlex.split(data)
 
+class CommandConfig(Command):
+	def __init__(self):
+		self.state = "start"
+
+	def execute(self, data=None):
+		if self.state == "start":
+			self.state = "get_obj"
+			return "return", "config"
+		elif self.state == "get_obj":
+			return utils.load_config()
+
 
 interface_commands = {
 	"add": CommandAdd,
-	"stats": CommandStats
+	"stats": CommandStats,
+	"config": CommandConfig
 }
