@@ -107,7 +107,12 @@ class CommandConfig(Command):
 			self.state = "get_obj"
 			return "return", "config"
 		elif self.state == "get_obj":
-			return utils.load_config()
+			settings = utils.load_config()
+
+			answ = "Current configuration:\n"
+			for key, val in settings.items():
+				answ += "%s: %s\n" % (key, val)
+			return answ
 
 
 interface_commands = {

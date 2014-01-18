@@ -44,10 +44,7 @@ def main():
 			cur = data["status"]
 			answ = str(link_handler)
 		elif "config" in data.keys():
-			config = data["config"]
-			answ = "Current configuration:\n"
-			for key, val in settings.items():
-				answ += "%s: %s\n" % (key, val)
+			answ = data["config"]
 
 		return answ
 
