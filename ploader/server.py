@@ -14,7 +14,7 @@ class Client(asyncore.dispatcher_with_send):
 		self.callback = callback
 		self.cur_command = None
 
-		self.command_string = "/".join(interface_commands)
+		self.command_string = "/".join(sorted(interface_commands))
 
 		# send welcome
 		self.send(("Welcome (try %s)\n" % self.command_string).encode(encoding='UTF-8'))
