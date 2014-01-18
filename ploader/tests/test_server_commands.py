@@ -163,5 +163,5 @@ class TestServerCommandConfig(TestCase):
 
 		self.assertEqual(
 			self.command.execute(),
-			'Current configuration:\ncaptcha-api-key: foo\ndownload-dir: somewhere\nmultithreading: True\nport: 42424\n'
+			'Current configuration:\ncaptcha-api-key: foo\ndownload-dir: somewhere\nparallel-download-num: 2\nport: 42424\n'
 		)

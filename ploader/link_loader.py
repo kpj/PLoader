@@ -13,6 +13,8 @@ class LinkLoader(object):
 		self.data = [] # list of Download objects
 		self.get_data() # already stores data in self.data
 
+		self.parallel_download_num = 0
+
 		self.settings = utils.load_config()
 
 	def get_data(self):
@@ -64,39 +66,37 @@ class LinkLoader(object):
 
 		self.append_download(dw)
 
-	def get_unstarted_downloads(self, index=0):
+	def get_unstarted_download(self, index=0):
 		i = 0
-		res = []
 		for dw in self.data:
 			if index > i:
 				if dw.get_status() != "success":
 					i += 1
 			else:
-				if dw.get_status() != "success":
+				if dw.get_status() != "success" and not dw.acquired:
 					dw.acquired = True
-					res.append(dw)
+					return dw
 				i += 1
-		return res
+		return None
 
 	def try_download(self):
-		"""Start all available downloads and return immediately,
-			if multithreading is enabled
-			Process one after another in order and check for new downloads afterwards (and process them if needed),
-			if multithreading is not enabled
+		"""Tries to initiate a download if capacities are left
 		"""
-		next_dw_list = self.get_unstarted_downloads()
+		if self.parallel_download_num < self.settings["parallel-download-num"]:
+			# allowed to add new download threads
+			next_dw = self.get_unstarted_download()
+			if next_dw:
+				utils.start_thread(next_dw.execute, self.on_download_finish)
 
-		while len(next_dw_list) != 0:
-			for next_dw in next_dw_list:
-				if self.settings["multithreading"]:
-					utils.start_thread(next_dw.execute)
-				else:
-					next_dw.execute()
+				self.parallel_download_num += 1
 
-			if self.settings["multithreading"]:
-				break
-			else:
-				next_dw_list = self.get_unstarted_downloads()
+	def on_download_finish(self):
+		"""Callback for download operations
+		"""
+		self.parallel_download_num -= 1
+
+		# don't forget other downloads
+		self.try_download()
 
 	def __str__(self):
 		return "\n".join([str(dw) for dw in (self.data)])

@@ -23,6 +23,6 @@ def create_case_config(path='./config.yaml'):
 	basic_conf = """download-dir: somewhere
 captcha-api-key: foo
 port: 42424
-multithreading: True"""
+parallel-download-num: 2"""
 	with open(path, 'w') as fd:
 		fd.write(basic_conf)

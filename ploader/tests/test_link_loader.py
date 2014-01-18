@@ -59,7 +59,7 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 
 		# TODO: find better way to compare objects
 		self.assertEqual(
-			repr(self.link_loader.get_unstarted_downloads()[0]),
+			repr(self.link_loader.get_unstarted_download()),
 			repr(sample_dw)
 		)
 
@@ -68,9 +68,15 @@ class TestLinkLoaderSpecialPloaderFile(TestCase):
 		self.link_loader.create_download('bla', ['http://foo.bar.baz/other_stuff.avi', 'http://foo.bar.baz/other_stuff2.avi'], 'blub')
 		self.link_loader.create_download('bla', ['http://foo.bar.baz/other_stuff.avi', 'http://foo.bar.baz/other_stuff2.avi'], 'blub')
 
+		# acquire all three of them
+		self.link_loader.get_unstarted_download()
+		self.link_loader.get_unstarted_download()
+		self.link_loader.get_unstarted_download()
+
+		# don't find them anymore
 		self.assertEqual(
-			len(self.link_loader.get_unstarted_downloads()),
-			3
+			self.link_loader.get_unstarted_download(),
+			None
 		)
 
 class TestLinkLoader(TestCase):

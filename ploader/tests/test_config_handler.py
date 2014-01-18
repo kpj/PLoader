@@ -24,7 +24,7 @@ class TestExistingConfig(TestCase):
 		self.assertEqual(settings['port'], 42424)
 		self.assertEqual(settings['download-dir'], 'somewhere')
 		self.assertEqual(settings['captcha-api-key'], 'foo')
-		self.assertTrue(settings['multithreading'])
+		self.assertTrue(settings['parallel-download-num'], 1)
 
 class TestNonexistentConfig(TestCase):
 	def setUp(self):
@@ -42,4 +42,4 @@ class TestNonexistentConfig(TestCase):
 		self.assertEqual(settings['port'], 50505)
 		self.assertEqual(settings['download-dir'], 'downloads')
 		self.assertEqual(settings['captcha-api-key'], 'xyz')
-		self.assertFalse(settings['multithreading'])
+		self.assertTrue(settings['parallel-download-num'], 2)

@@ -127,7 +127,7 @@ def create_default_config(path='./config.yaml'):
 	basic_conf = """download-dir: downloads
 captcha-api-key: xyz
 port: 50505
-multithreading: False"""
+parallel-download-num: 1"""
 	with open(path, 'w') as fd:
 		fd.write(basic_conf)
 
@@ -145,7 +145,7 @@ def sizeof_fmt(num):
 		num /= 1024.0
 	return "%3.1f%s" % (num, 'TB')
 
-def start_thread(func):
-	thread = threading.Thread(target = func)
+def start_thread(func, callback=None):
+	thread = threading.Thread(target=func, kwargs={'on_finish': callback})
 	thread.daemon = True
 	thread.start()

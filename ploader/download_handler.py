@@ -57,9 +57,11 @@ class Download(object):
 
 		return "loading"
 
-	def execute(self):
+	def execute(self, on_finish):
 		self.download()
 		self.unpack()
+
+		on_finish()
 
 	def unpack(self):
 		if self.get_status() == "success":
