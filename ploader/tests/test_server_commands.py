@@ -163,5 +163,5 @@ class TestServerCommandConfig(TestCase):
 
 		self.assertEqual(
 			self.command.execute(),
-			{'download-dir': 'somewhere', 'captcha-api-key': 'foo', 'port': 42424, 'multithreading': True}
+			'Current configuration:\ncaptcha-api-key: foo\ndownload-dir: somewhere\nmultithreading: True\nport: 42424\n'
 		)

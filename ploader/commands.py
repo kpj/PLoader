@@ -110,7 +110,7 @@ class CommandConfig(Command):
 			settings = utils.load_config()
 
 			answ = "Current configuration:\n"
-			for key, val in settings.items():
+			for key, val in sorted(settings.items()):
 				answ += "%s: %s\n" % (key, val)
 			return answ
 
