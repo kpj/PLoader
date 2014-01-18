@@ -1,4 +1,4 @@
-download-dir: downloads
-captcha-api-key: xyz
-port: 50505
-parallel-download-num: 1
+download-dir: downloads # directory which contains every downloaded file in its corresponding subdirectory
+captcha-api-key: xyz # key used by some captcha-service
+port: 50505 # port the server is going to listen on
+parallel-download-num: 1 # start this many download-instances at once
