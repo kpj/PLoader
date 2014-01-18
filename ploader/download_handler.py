@@ -134,6 +134,9 @@ class Download(object):
 				self.links.append(error_item)
 				error_item = None
 
+			# fix size
+			ele["progress"] = ele["progress"].split('/')[1]
+
 			# save current changes
 			self.saver()
 
