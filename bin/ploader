@@ -14,13 +14,11 @@ import asyncore, threading, time, argparse, os
 def main():
 	# setup argparse
 	parser = argparse.ArgumentParser(description='CLI download manager written in python')
-	user_dir = os.path.expanduser('~')
-	default_config_path = '%s/.ploader.conf' % user_dir
 	parser.add_argument(
 		'-f',
 		'--config',
 		help='Specify path to config',
-		default=default_config_path
+		default='%s/.ploader.conf' % utils.get_user_dir()
 	)
 	args = parser.parse_args()
 	utils.set_config_path(args.config)

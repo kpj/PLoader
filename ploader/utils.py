@@ -149,3 +149,6 @@ def start_thread(func, callback=None):
 	thread = threading.Thread(target=func, kwargs={'on_finish': callback})
 	thread.daemon = True
 	thread.start()
+
+def get_user_dir():
+	return os.path.expanduser('~')
