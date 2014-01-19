@@ -135,7 +135,8 @@ class Download(object):
 				error_item = None
 
 			# fix size
-			ele["progress"] = ele["progress"].split('/')[1]
+			if '/' in ele["progress"];
+				ele["progress"] = ele["progress"].split('/')[1]
 
 			# save current changes
 			self.saver()
