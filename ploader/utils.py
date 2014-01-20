@@ -1,5 +1,5 @@
 import subprocess, os, os.path, yaml, shlex, re, urllib.parse, shutil, urllib.request, threading
-
+import sys
 
 def exe(cmd):
 	if type(cmd) != type([]):
@@ -94,16 +94,24 @@ def parse_url_info(url, res_list, res_err, retc):
 
 def load_file(url, path, callback):
 	"""Downloads url to file.
-		Returns true on success, otherwise false
+		Returns (True, False) on success, otherwise (False, <x>)
+		If <x> is True this is considered to be a fatal error, link will be skipped
+		If <x> is False this link will be retried.
 	"""
 	print("Saving '%s' to '%s'" % (url, path))
 
 	try:
 		dw_file_to(url, path, callback)
-		return True
 	except Exception as e:
 		print("Error while downloading: " + str(e))
-		return False
+
+		# check for fatal error
+		if e.code == 404:
+			return (False, True)
+
+		return (False, False)
+	else:
+		return (True, False)		
 
 def set_config_path(path):
 	global config_path

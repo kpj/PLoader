@@ -55,6 +55,8 @@ class Download(object):
 		if nots and not self.acquired:
 			return "not started"
 
+		# TODO: include 'skip' status in final status
+
 		return "loading"
 
 	def execute(self, on_finish):
@@ -91,8 +93,8 @@ class Download(object):
 		"""
 		error_item = None
 		for ele in self.links:
-			if ele["status"] == "success":
-				# skip if already successfully downloaded
+			if ele["status"] == "success" or ele["status"] == "skip":
+				# skip if already successfully (or completely broken) downloaded
 				continue
 
 			# init progress bar
@@ -109,20 +111,23 @@ class Download(object):
 
 			# get url info (name, direct link)
 			answ = utils.parse_url_info(*utils.get_url_info(link))
-			error = not answ # answ == False on error
+			parse_error = not answ # answ == False on error
 
-			if not error:
+			if not parse_error:
 				# try to actually download file
 				fname, download_link = answ
 				if not ele["filename"]:
 					ele["filename"] = fname
 			
 				final_path = os.path.join(self.dw_dir, fname)
-				error = not utils.load_file(download_link, final_path, self.handle_download_progress)
+				load_error, load_fatal = utils.load_file(download_link, final_path, self.handle_download_progress)
 
 			# handle errors if needed
 			self.loading = False
-			if error:
+			if load_fatal:
+				ele["status"] = "skip"
+				error_item = ele
+			elif load_error:
 				ele["status"] = "error"
 				error_item = ele
 			else:
