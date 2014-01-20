@@ -1,5 +1,5 @@
 import subprocess, os, os.path, yaml, shlex, re, urllib.parse, shutil, urllib.request, threading
-import sys
+
 
 def exe(cmd):
 	if type(cmd) != type([]):
