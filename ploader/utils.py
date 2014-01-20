@@ -152,3 +152,6 @@ def start_thread(func, callback=None):
 
 def get_user_dir():
 	return os.path.expanduser('~')
+
+def get_application_dir():
+	return set_dir(os.path.join(get_user_dir(), '.ploader'))

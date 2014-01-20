@@ -26,7 +26,7 @@ def main():
 	# setup program
 	settings = utils.load_config()
 
-	link_handler = LinkLoader("link_list.ploader")
+	link_handler = LinkLoader(os.path.join(utils.get_application_dir(), "link_list.ploader"))
 
 	def handle_net_input(data):
 		answ = "Thank you"
