@@ -1,5 +1,5 @@
 import http.server, threading, socketserver
-import os
+import os, yaml
 
 from ploader.utils import set_config_path
 
@@ -20,9 +20,10 @@ def handle_cwd(path='ploader/tests/cwd'):
 	set_config_path('../../../config.yaml')
 
 def create_case_config(path='./config.yaml'):
-	basic_conf = """download-dir: somewhere
-captcha-api-key: foo
-port: 42424
-parallel-download-num: 2"""
-	with open(path, 'w') as fd:
-		fd.write(basic_conf)
+	basic_conf = {
+		'download-dir': 'somewhere',
+		'captcha-api-key': 'foo',
+		'port': 42424,
+		'parallel-download-num': 2
+	}
+	yaml.dump(basic_conf, open(path, 'w'), default_flow_style=False)

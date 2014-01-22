@@ -132,12 +132,13 @@ def load_config():
 			raise Exception('[FATAL] - Could not create config (path: %s)' %  config_path)
 
 def create_default_config(path='./config.yaml'):
-	basic_conf = """download-dir: downloads
-captcha-api-key: xyz
-port: 50505
-parallel-download-num: 1"""
-	with open(path, 'w') as fd:
-		fd.write(basic_conf)
+	basic_conf = {
+		'download-dir': 'downloads',
+		'captcha-api-key': 'xyz',
+		'port': 50505,
+		'parallel-download-num': 1
+	}
+	yaml.dump(basic_conf, open(path, 'w'), default_flow_style=False)
 
 def clean_links(raw_data):
 	return re.findall('(?:ftp|https|http)?://(?:[a-zA-Z]|[0-9]|[$-_@.&+~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', raw_data)
