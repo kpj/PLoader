@@ -67,13 +67,16 @@ class LinkLoader(object):
 		self.append_download(dw)
 
 	def get_unstarted_download(self, index=0):
+		def is_qualified(dw):
+			return dw.get_status() != "success" and not dw.acquired
+
 		i = 0
 		for dw in self.data:
 			if index > i:
-				if dw.get_status() != "success":
+				if is_qualified(dw):
 					i += 1
 			else:
-				if dw.get_status() != "success" and not dw.acquired:
+				if is_qualified(dw):
 					dw.acquired = True
 					return dw
 				i += 1
