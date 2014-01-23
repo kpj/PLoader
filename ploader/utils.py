@@ -94,7 +94,7 @@ def parse_url_info(url, res_list, res_err, retc):
 
 def load_file(url, path, callback):
 	"""Downloads url to file.
-		Returns (True, False) on success, otherwise (False, <x>)
+		Returns (False, False) on success, otherwise (True, <x>)
 		If <x> is True this is considered to be a fatal error, link will be skipped
 		If <x> is False this link will be retried.
 	"""
@@ -107,11 +107,11 @@ def load_file(url, path, callback):
 
 		# check for fatal error
 		if e.code == 404:
-			return (False, True)
+			return (None, True)
 
-		return (False, False)
+		return (True, False)
 	else:
-		return (True, False)		
+		return (False, False)		
 
 def set_config_path(path):
 	global config_path
