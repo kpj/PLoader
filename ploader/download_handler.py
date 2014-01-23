@@ -139,9 +139,11 @@ class Download(object):
 				self.links.append(error_item)
 				error_item = None
 
-			# fix size
-			if '/' in ele["progress"]:
-				ele["progress"] = ele["progress"].split('/')[1]
+				ele["progress"] = "-"
+			else:
+				# fix size
+				if '/' in ele["progress"]:
+					ele["progress"] = ele["progress"].split('/')[1]
 
 			# save current changes
 			self.saver()
