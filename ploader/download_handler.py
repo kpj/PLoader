@@ -113,6 +113,7 @@ class Download(object):
 			answ = utils.parse_url_info(*utils.get_url_info(link))
 			parse_error = not answ # answ == False on error
 
+			load_error = load_fatal = False
 			if not parse_error:
 				# try to actually download file
 				fname, download_link = answ
@@ -127,7 +128,7 @@ class Download(object):
 			if load_fatal:
 				ele["status"] = "skip"
 				error_item = ele
-			elif load_error:
+			elif load_error or parse_error:
 				ele["status"] = "error"
 				error_item = ele
 			else:
