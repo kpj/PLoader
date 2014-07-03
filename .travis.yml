@@ -3,4 +3,4 @@ python:
     - "3.3"
 install:
     - "python setup.py -q install"
-script: nosetests
+script: nosetests -v
