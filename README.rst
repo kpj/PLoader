@@ -1,6 +1,6 @@
 PLoader
 =======
-.. image:: https://pypip.in/v/ploader/badge.png
+.. image:: https://img.shields.io/pypi/v/ploader.svg
     :target: https://crate.io/packages/ploader/
     :alt: Latest version
 
@@ -8,7 +8,7 @@ PLoader
     :target: https://travis-ci.org/kpj/PLoader
     :alt: Travis-CI
     
-.. image:: https://pypip.in/d/ploader/badge.png
+.. image:: https://img.shields.io/pypi/dm/ploader.svg
     :target: https://crate.io/packages/ploader/
     :alt: Number of PyPI downloads
 
